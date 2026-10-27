@@ -1,4 +1,8 @@
-import model.User;
+package com.example.primeraPractica;
+
+
+
+import com.example.primeraPractica.model.User;
 
 import java.util.ArrayList;
 import java.util.List;

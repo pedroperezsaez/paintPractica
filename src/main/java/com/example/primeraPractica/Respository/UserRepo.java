@@ -1,8 +1,11 @@
-package Respository;
+package com.example.primeraPractica.Respository;
 
 
-import model.User;
+import com.example.primeraPractica.model.User;
+
+import java.util.List;
 
 public interface UserRepo {
    User buscarUser(String username);
+
 }

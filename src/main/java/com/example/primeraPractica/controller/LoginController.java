@@ -1,6 +1,6 @@
-package controller;
+package com.example.primeraPractica.controller;
 
-import Service.LoginService;
+import com.example.primeraPractica.Service.LoginService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,28 +11,38 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
+
     @Autowired
     LoginService loginService;
-    @GetMapping("/login")
-    public String login(){
-        return "login";
+
+    @GetMapping("/index")
+    public String login() {
+        return "index";
     }
-    @PostMapping("login")
-    public String loginPost(@RequestParam String username, @RequestParam String password, Model model, HttpSession session){
-        if (loginService.checkLogin(username, password)){
-            session.setAttribute("username",username);
+
+    @PostMapping("/index")
+    public String loginPost(@RequestParam String username,
+                            @RequestParam String password,
+                            Model model,
+                            HttpSession session) {
+
+        if (loginService.checkLogin(username, password)) {
+            session.setAttribute("username", username);
             return "redirect:/private";
         }
-        model.addAttribute("message","Usuario o pass incorrectos");
-        return "login";
+
+        model.addAttribute("message", "Usuario o pass incorrectos");
+        return "index";
     }
 
     @GetMapping("/private")
-    public String privada(HttpSession session){
-        String username=(String)session.getAttribute("username");
-        if (username==null)return "redirect/login";
+    public String privada(HttpSession session) {
+        String username = (String) session.getAttribute("username");
+
+        if (username == null) {
+            return "redirect:/index";
+        }
+
         return "private";
     }
-
-
 }

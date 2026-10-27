@@ -1,4 +1,4 @@
-package model;
+package com.example.primeraPractica.model;
 
 public class User {
     String username;
