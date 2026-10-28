@@ -15,16 +15,14 @@ public class LoginController {
     @Autowired
     LoginService loginService;
 
-    @GetMapping("/index")
+    @GetMapping("/login")
     public String login() {
-        return "index";
+        return "login";
     }
 
-    @PostMapping("/index")
+    @PostMapping("/login")
     public String loginPost(@RequestParam String username,
-                            @RequestParam String password,
-                            Model model,
-                            HttpSession session) {
+                            @RequestParam String password, Model model, HttpSession session) {
 
         if (loginService.checkLogin(username, password)) {
             session.setAttribute("username", username);
@@ -32,7 +30,7 @@ public class LoginController {
         }
 
         model.addAttribute("message", "Usuario o pass incorrectos");
-        return "index";
+        return "login";
     }
 
     @GetMapping("/private")
@@ -40,9 +38,11 @@ public class LoginController {
         String username = (String) session.getAttribute("username");
 
         if (username == null) {
-            return "redirect:/index";
+            return "redirect:/login";
         }
 
         return "private";
     }
+
+
 }
