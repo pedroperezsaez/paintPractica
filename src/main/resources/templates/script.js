@@ -12,7 +12,7 @@ const ctx = canvas.getContext("2d");
 let cuadradoSeleccionado=null;
 
 
-canvas.addEventListener("mousemove",(event)=>{
+canvas.addEventListener("click",(event)=>{
   if(cuadradoSeleccionado !=null){
     editarEliminarFigura()
   }

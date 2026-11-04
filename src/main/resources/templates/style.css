@@ -1,8 +1,9 @@
-body{
+body {
     display: grid;
-    grid-template-areas: "titulo titulo titulo"
-    "figuras canvas figura-seleccionada";
-     justify-content: center;
+    grid-template-columns: 200px 800px 200px;
+    grid-template-rows: 800px;
+    grid-template-areas: "figuras canvas";
+    justify-content: center;
     background-color: purple;
 }
 
