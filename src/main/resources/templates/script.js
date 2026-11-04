@@ -42,7 +42,6 @@ function  editarEliminarFigura(){
             <input type="checkbox" id="checkLabel" ${cuadrado.relleno ? "checked" : ""}>
             <label for="checkLabel">Con relleno</label>
         </div>
-
         <div>
             <label for="sizesInputSmall">Tamaño</label>
             <input type="number" id="sizesInputSmall" value="${cuadrado.tamaño}">
