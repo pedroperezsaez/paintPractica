@@ -9,6 +9,11 @@ import java.util.List;
 @Repository
 public class CanvasRepoImpl implements CanvasRepo{
     private final List<Canvas> canvasList= new ArrayList<>();
+    public CanvasRepoImpl(){
+        canvasList.add(new Canvas(1, "Mi primer dibujo", new ArrayList<>(), 1));
+        canvasList.add(new Canvas(2, "Paisaje", new ArrayList<>(), 1));
+        canvasList.add(new Canvas(3, "Figuras", new ArrayList<>(), 2));
+    }
     @Override
     public Canvas buscarCanvas(int id) {
         return  canvasList.stream().filter(i->i.getId()==id).findFirst().orElse(null);

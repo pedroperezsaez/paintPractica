@@ -10,7 +10,10 @@ import java.util.List;
 @Component
 public class UserRepoImpl implements UserRepo {
     private final List<User> users = new ArrayList<>();
-    ;
+    UserRepoImpl(){
+        users.add(new User("pedro","1", 1234));
+        users.add(new User("juan","1" ,1234));
+    }
 
 
 

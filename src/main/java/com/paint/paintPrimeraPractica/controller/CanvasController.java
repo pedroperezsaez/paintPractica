@@ -32,6 +32,9 @@ public class CanvasController {
     model.addAttribute("todosLosCanvasUsuario",canvasService.buscarCanvasDelUsuario(idUser));
     model.addAttribute("todosLosCanvas",canvasService.buscarTodosCanvas());
     model.addAttribute("esEditor",esEditor);
+        model.addAttribute("idUser", idUser);
     return "paint";
     }
+
+
 }
