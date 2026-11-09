@@ -1,11 +1,14 @@
 package com.paint.paintPrimeraPractica.model;
 
 public class User {
-    String username;
-    String password;
-    public User(String username, String password){
+    private int id;
+    private String username;
+    private String password;
+    public User(String username, String password, int id){
         this.username=username;
         this.password=password;
+        this.id=id;
+
     }
 
     public String getUsername() {
@@ -22,5 +25,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -26,14 +26,14 @@ public class LoginController {
 
         if (loginService.checkLogin(username, password)) {
             session.setAttribute("username", username);
-            return "redirect:/private";
+            return "redirect:/paint";
         }
 
         model.addAttribute("message", "Usuario o pass incorrectos");
         return "login";
     }
 
-    @GetMapping("/private")
+    @GetMapping("/paint")
     public String privada(HttpSession session) {
         String username = (String) session.getAttribute("username");
 
@@ -41,7 +41,7 @@ public class LoginController {
             return "redirect:/login";
         }
 
-        return "private";
+        return "paint";
     }
 
 

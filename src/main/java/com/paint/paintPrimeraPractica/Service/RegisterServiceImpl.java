@@ -6,10 +6,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RegisterServiceImpl implements RegisterService {
+
     @Autowired
     UserRepo userRepo;
+    int contadorId=1;
     @Override
     public boolean checkRegister(String username, String password) {
-        return  true;
+
+        if (username.isEmpty() || password.isEmpty()) {
+            return false;
+        }
+        if (userRepo.buscarUser(username) != null) {
+            return false;
+        }
+        userRepo.addUser(username, password,contadorId);
+        contadorId++;
+
+        return true;
     }
 }

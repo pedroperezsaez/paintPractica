@@ -20,7 +20,7 @@ public class RegisterController {
     @PostMapping("/register")
     public String registerPost(@RequestParam String username, @RequestParam String password, Model model){
         if (registerService.checkRegister(username, password)){
-            return "redirect:/index";
+            return "redirect:/";
         }
         model.addAttribute("message", "Usuario existe o datos incorrectos");
         return "register";

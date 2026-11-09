@@ -2,7 +2,7 @@ body {
     display: grid;
     grid-template-columns: 200px 800px 200px;
     grid-template-rows: 800px;
-    grid-template-areas: "figuras canvas";
+    grid-template-areas: "figuras canvas listaCanvas";
     justify-content: center;
     background-color: purple;
 }
@@ -18,4 +18,10 @@ body {
     grid-area: figuras;
     background-color: red;
     height: 800px;
+}
+
+#lista-canvas{
+    grid-area: listaCanvas;
+    height: 800px;
+    background-color: chartreuse;
 }

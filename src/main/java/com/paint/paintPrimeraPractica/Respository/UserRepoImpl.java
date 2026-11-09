@@ -10,6 +10,7 @@ import java.util.List;
 @Component
 public class UserRepoImpl implements UserRepo {
     private final List<User> users = new ArrayList<>();
+    ;
 
 
 
@@ -19,16 +20,14 @@ public class UserRepoImpl implements UserRepo {
     }
 
     @Override
-    public User addUser(String username, String password) {
-        if (!username.isEmpty() && !password.isEmpty()) {
-            User user = new User(username, password);
-            users.add(user);
+    public User addUser(String username, String password,int id) {
 
-            return user;
-
-        }
+        User user = new User(username, password, id);
+        users.add(user);
 
 
-        return null;
+        return user;
+
+
     }
 }
