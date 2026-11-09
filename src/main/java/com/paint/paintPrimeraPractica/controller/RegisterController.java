@@ -1,7 +1,6 @@
-package com.example.primeraPractica.controller;
+package com.paint.paintPrimeraPractica.controller;
 
-import com.example.primeraPractica.Service.LoginService;
-import com.example.primeraPractica.Service.RegisterService;
+import com.paint.paintPrimeraPractica.Service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

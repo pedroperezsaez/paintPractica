@@ -1,6 +1,6 @@
-package com.example.primeraPractica.Service;
+package com.paint.paintPrimeraPractica.Service;
 
-import com.example.primeraPractica.Respository.UserRepo;
+import com.paint.paintPrimeraPractica.Respository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
