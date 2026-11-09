@@ -1,6 +1,9 @@
 package com.paint.paintPrimeraPractica.controller;
 
+import com.paint.paintPrimeraPractica.Service.CanvasService;
 import com.paint.paintPrimeraPractica.Service.LoginService;
+import com.paint.paintPrimeraPractica.Service.UserService;
+import com.paint.paintPrimeraPractica.model.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +17,10 @@ public class LoginController {
 
     @Autowired
     LoginService loginService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    CanvasService canvasService;
 
     @GetMapping("/login")
     public String login() {
@@ -25,7 +32,9 @@ public class LoginController {
                             @RequestParam String password, Model model, HttpSession session) {
 
         if (loginService.checkLogin(username, password)) {
+            User user=userService.buscarUser(username);
             session.setAttribute("username", username);
+            session.setAttribute("idUser", user.getId());
             return "redirect:/paint";
         }
 
@@ -33,16 +42,23 @@ public class LoginController {
         return "login";
     }
 
-    @GetMapping("/paint")
-    public String privada(HttpSession session) {
+   /* @GetMapping("/paint")
+    public String privada(HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
+        int idUser=(int) session.getAttribute("idUser");
 
         if (username == null) {
             return "redirect:/login";
         }
+        model.addAttribute("todosLosCanvasUsuario", canvasService.buscarCanvasDelUsuario(idUser));
+        model.addAttribute("todosLosCanvas", canvasService.buscarTodosCanvas());
+        model.addAttribute("idUser", idUser);
 
         return "paint";
     }
+
+    */
+
 
 
 }

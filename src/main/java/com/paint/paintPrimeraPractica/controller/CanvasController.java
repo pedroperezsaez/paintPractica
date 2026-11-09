@@ -23,6 +23,15 @@ public class CanvasController {
     CanvasService canvasService;
     @Autowired
     UserService userService;
+    @GetMapping("/paint")
+    public String mostrarPaint(Model model, HttpSession session){
+        int idUser=(int) session.getAttribute("idUser");
+        model.addAttribute("todosLosCanvasUsuario", canvasService.buscarCanvasDelUsuario(idUser));
+        model.addAttribute("todosLosCanvas", canvasService.buscarTodosCanvas());
+        model.addAttribute("idUser", idUser);
+        return "paint";
+    }
+
     @GetMapping("/paint/{id}")
     public String enviarCanvas(Model model, @PathVariable int id, HttpSession session) {
     int idUser=(int) session.getAttribute("idUser");

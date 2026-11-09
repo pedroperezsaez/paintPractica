@@ -10,7 +10,7 @@ import java.util.List;
 public class CanvasRepoImpl implements CanvasRepo{
     private final List<Canvas> canvasList= new ArrayList<>();
     public CanvasRepoImpl(){
-        canvasList.add(new Canvas(1, "Mi primer dibujo", new ArrayList<>(), 1));
+        canvasList.add(new Canvas(1, "dibujo", new ArrayList<>(), 1));
         canvasList.add(new Canvas(2, "Paisaje", new ArrayList<>(), 1));
         canvasList.add(new Canvas(3, "Figuras", new ArrayList<>(), 2));
     }
