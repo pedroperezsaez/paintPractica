@@ -45,5 +45,13 @@ public class CanvasController {
     return "paint";
     }
 
+    @PostMapping("/paint/eliminarCanvas/{id}")
+    public String eliminarCanvas(@PathVariable int id, HttpSession session ){
+
+        Canvas canvas = canvasService.buscarCanvas(id);
+        canvasService.eliminarCanvas(id);
+        return "redirect:/paint";
+    }
+
 
 }
