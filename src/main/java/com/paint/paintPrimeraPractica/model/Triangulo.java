@@ -56,7 +56,7 @@ public class Triangulo extends Figura{
         this.y3 = y3;
     }
 
-    Triangulo(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId,int x1, int y1, int x2, int y2, int x3, int y3) {
+    public Triangulo(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId, int x1, int y1, int x2, int y2, int x3, int y3) {
         super(tipo, id, x, y, color, tieneRelleno,canvasId);
         this.x1=x1;
         this.y1=y1;

@@ -8,7 +8,7 @@ public class Trazado extends Figura{
 
 
 
-    Trazado(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId, List<PosicionPunto> posicionPuntos) {
+    public Trazado(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId, List<PosicionPunto> posicionPuntos) {
         super(tipo, id, x, y, color, tieneRelleno, canvasId);
         this.posicionPuntos=posicionPuntos;
     }
