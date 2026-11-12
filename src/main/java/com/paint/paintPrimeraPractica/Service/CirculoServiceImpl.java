@@ -32,4 +32,5 @@ public class CirculoServiceImpl implements CirculoService {
     public void eliminarFigura(int id) {
         circuloRepo.eliminarFigura(id);
     }
+
 }

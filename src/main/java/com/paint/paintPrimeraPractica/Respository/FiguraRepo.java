@@ -20,5 +20,6 @@ public interface FiguraRepo {
     void agregarTrazo(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId,
                       List<PosicionPunto> posicionPuntos);
 
-    List<Figura> buscarTodasFigurasCanvas(int canvasId, List<Figura> figurasCanvas);
+    List<Figura> buscarTodasFigurasCanvas(int canvasId);
+
 }

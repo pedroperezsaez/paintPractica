@@ -50,7 +50,9 @@ public class FiguraRepoImpl implements FiguraRepo {
     }
 
     @Override
-    public List<Figura> buscarTodasFigurasCanvas(int canvasId, List<Figura> figurasCanvas) {
+    public List<Figura> buscarTodasFigurasCanvas(int canvasId) {
         return figuras.stream().filter(i -> i.getCanvasId() == canvasId).toList();
     }
+
+
 }
