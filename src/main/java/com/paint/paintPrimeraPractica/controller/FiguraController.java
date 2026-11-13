@@ -19,10 +19,11 @@ public class FiguraController {
 
     @GetMapping(value="/figuras/{id}")
 public String enviarJson(@PathVariable int id, Model model){
-   List<Figura> figuras= figurasService.buscarTodasFigurasCanvas(id);
-    model.addAttribute("figuras",figuras);
+   List<Figura> figurasJson= figurasService.buscarTodasFigurasCanvas(id);
+    model.addAttribute("figurasJson",figurasJson);
 
  return "/paint";
 
 }
+
 }

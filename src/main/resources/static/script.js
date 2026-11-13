@@ -143,13 +143,9 @@ canvas.addEventListener("click", (event) => {
 
 
 function dibujarCuadrados() {
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     for (let i = 0; i < cuadrados.length; i++) {
-
         const cuadrado = cuadrados[i];
-
         ctx.fillStyle = cuadrado.color;
         ctx.strokeStyle = cuadrado.color;
 
@@ -169,4 +165,8 @@ function dibujarCuadrados() {
             cuadrado.tamaño
         );
     }
+
+
 }
+
+const figurasJson=JSON.parse(document.getElementById("datosFiguras").textContent)

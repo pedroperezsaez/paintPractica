@@ -1,0 +1,20 @@
+body {
+  
+    background-color: blue;
+}
+.botones{
+      display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "login register";
+    justify-items: center;
+    align-items: center;
+   
+    margin: 0;
+}
+#boton-registrar {
+    grid-area: register;
+}
+
+#boton-login {
+    grid-area: login;
+}
