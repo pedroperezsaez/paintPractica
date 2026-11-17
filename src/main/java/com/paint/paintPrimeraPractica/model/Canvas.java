@@ -7,7 +7,7 @@ public class Canvas {
     private String nombre;
     private List<Figura> figuras;
     private int idUser;
-
+    private String figurasJson;
     public Canvas(int id, String nombre, List<Figura> figuras, int idUser){
         this.id=id;
         this.nombre=nombre;
