@@ -12,25 +12,25 @@ import java.util.List;
 public class CanvasServiceImpl implements CanvasService{
     @Autowired
     CanvasRepo canvasRepo;
-    int contador=1;
+    int contador=4;
     @Override
     public Canvas buscarCanvas(int id) {
         return canvasRepo.buscarCanvas(id);
     }
 
     @Override
-    public void agregarCanvas( String nombre, List<Figura> figuras, int idUser) {
-
-
-        canvasRepo.agregarCanvas(contador,nombre,figuras,idUser);
-        contador++;
-
+    public int agregarCanvas(String nombre, List<Figura> figuras, int idUser) {
+        int id = contador++;
+        canvasRepo.agregarCanvas(id, nombre, figuras, idUser);
+        return id;
     }
 
     @Override
     public List<Canvas> buscarTodosCanvas() {
         return canvasRepo.buscarTodosCanvas();
     }
+
+
 
     @Override
     public void eliminarCanvas(int id) {

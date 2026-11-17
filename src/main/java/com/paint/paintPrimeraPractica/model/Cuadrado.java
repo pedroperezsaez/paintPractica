@@ -12,7 +12,7 @@ public class Cuadrado  extends Figura{
         this.grandaria = grandaria;
     }
 
-    Cuadrado(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId, int grandaria) {
+   public Cuadrado(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId, int grandaria) {
         super(tipo, id, x, y, color, tieneRelleno, canvasId);
         this.grandaria=grandaria;
     }

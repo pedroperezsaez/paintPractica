@@ -18,4 +18,5 @@ public interface FigurasService {
                       List<PosicionPunto> posicionPuntos);
     List<Figura> buscarTodasFigurasCanvas(int canvasId);
     String crearJson(int canvasId);
+    void guardarFiguras(String json, int canvasId);
 }

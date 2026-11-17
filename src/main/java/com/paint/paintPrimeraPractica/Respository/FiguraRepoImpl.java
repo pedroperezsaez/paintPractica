@@ -34,7 +34,8 @@ public class FiguraRepoImpl implements FiguraRepo {
     }
 
     @Override
-    public void agregarTriangulo(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId, int x1, int y1, int x2, int y2, int x3, int y3) {
+    public void agregarTriangulo(String tipo, int id, int x, int y, String color, boolean tieneRelleno,
+                                 int canvasId, int x1, int y1, int x2, int y2, int x3, int y3) {
         Triangulo triangulo = new Triangulo(tipo, id, x, y, color, tieneRelleno
                 , canvasId, x1, y1, x2, y2, x3, y3);
         figuras.add(triangulo);
@@ -52,6 +53,17 @@ public class FiguraRepoImpl implements FiguraRepo {
     @Override
     public List<Figura> buscarTodasFigurasCanvas(int canvasId) {
         return figuras.stream().filter(i -> i.getCanvasId() == canvasId).toList();
+    }
+
+    @Override
+    public void reemplazarFiguras(int canvasId, List<Figura> figurasNuevas) {
+        for (int i = figuras.size() - 1; i >= 0; i--) {
+            if (figuras.get(i).getCanvasId() == canvasId) {
+                figuras.remove(i);
+            }
+        }
+
+        figuras.addAll(figurasNuevas);
     }
 
 

@@ -10,4 +10,5 @@ public interface CirculoService {
     List<Figura> buscarFigurasDelcanvas(int idCanvas);
     public void eliminarFigura(int id);
 
+
 }

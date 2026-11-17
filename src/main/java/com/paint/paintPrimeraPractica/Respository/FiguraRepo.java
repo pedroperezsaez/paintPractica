@@ -21,5 +21,6 @@ public interface FiguraRepo {
                       List<PosicionPunto> posicionPuntos);
 
     List<Figura> buscarTodasFigurasCanvas(int canvasId);
+    void reemplazarFiguras(int canvasId, List<Figura> figuras);
 
 }
