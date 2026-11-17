@@ -6,6 +6,12 @@ let relleno = false;
 let creando = false;
 let figuraSeleccionada = null;
 let tipoFigura = "";
+let inicioX = 0;
+let inicioY = 0;
+let finX = 0;
+let finY = 0;
+let tamanoInicial = 100;
+let figuraEnCreacion = null;
 
 const formulario = document.getElementById("form");
 
@@ -41,69 +47,90 @@ const botones = [
   document.getElementById("boton-circulo"),
   document.getElementById("boton-estrella")
 ];
-
 for (const boton of botones) {
-  boton.addEventListener("click", function() {
-    tipoFigura = boton.getAttribute("data-tipo");
-    mostrarOpciones();
-  });
+  if (boton !== null) {
+    boton.addEventListener("click", function() {
+      tipoFigura = boton.getAttribute("data-tipo");
+      mostrarOpciones();
+    });
+  }
 }
-canvas.addEventListener("click",(event)=>{
-    if(creando == false){
-        return;
-    }
-    const tamano= Number(document.getElementById("tamano").value)
-   const x= event.offsetX;
-   const y= event.offsetY;
-   let figura;
-   if(tipoFigura=="Cuadrado"){
-   figura={ tipo: "Cuadrado",
-      x: x,
-      y: y,
-      grandaria: tamano,
-      color: "red",
-      tieneRelleno: relleno
-   };
-}else if(tipoFigura=="Triangulo"){
-     figura = {
-      tipo: "Triangulo",
-      x: x,
-      y: y,
-      x1: x,
-      y1: y - tamano / 2,
-      x2: x + tamano / 2,
-      y2: y + tamano / 2,
-      x3: x - tamano / 2,
-      y3: y + tamano / 2,
-      color: "red",
-      tieneRelleno: relleno
-    };
-} else if (tipoFigura === "Circulo") {
-    figura = {
-      tipo: "Circulo",
-      x: x,
-      y: y,
-      radios: tamano / 2,
-      color: "red",
-      tieneRelleno: relleno
-    };
-}else {
-    figura = {
-      tipo: "Estrella",
-      x: x,
-      y: y,
-      grandaria: tamano,
-      color: "red",
-      tieneRelleno: relleno
-    };
+
+function ajustarFigurarArrastrando(figura,tamanoPorDefecto,esFinal){
+    let tamano=Math.max(Math.abs(finX-inicioX), Math.abs(finY-inicioY))
+    if (esFinal && tamano < 1) {
+  tamano = tamanoPorDefecto;
 }
-figuras.push(figura)
-dibujar()
-creando=false;
-formulario.innerHTML="";
+      if (figura.tipo === "Cuadrado") {
+    figura.x = Math.min(inicioX, finX);
+    figura.y = Math.min(inicioY, finY);
+    figura.grandaria = tamano;
+  } else if (figura.tipo === "Circulo") {
+    figura.x = (inicioX + finX) / 2;
+    figura.y = (inicioY + finY) / 2;
+    figura.radios = tamano / 2;
+  } else if (figura.tipo === "Triangulo") {
+    figura.x = (inicioX + finX) / 2;
+    figura.y = (inicioY + finY) / 2;
+    figura.x1 = figura.x;
+    figura.y1 = figura.y - tamano / 2;
+    figura.x2 = figura.x + tamano / 2;
+    figura.y2 = figura.y + tamano / 2;
+    figura.x3 = figura.x - tamano / 2;
+    figura.y3 = figura.y + tamano / 2;
+  }
 
-   } )
+}
 
+canvas.addEventListener("mousedown", function(event) {
+  if (creando == false) {
+    return;
+  }
+
+ 
+
+
+  inicioX = event.offsetX;
+  inicioY = event.offsetY;
+  finX = inicioX;
+  finY = inicioY;
+  tamanoInicial = Number(document.getElementById("tamano").value) || 100;
+
+  figuraEnCreacion = {
+    tipo: tipoFigura,
+    x: inicioX,
+    y: inicioY,
+    color: "red",
+    tieneRelleno: relleno
+  };
+
+  figuras.push(figuraEnCreacion);
+  ajustarFigurarArrastrando(figuraEnCreacion, tamanoInicial, false);
+  dibujar();
+});
+
+canvas.addEventListener("mousemove", function(event) {
+  if (figuraEnCreacion == null) {
+    return;
+  }
+
+  finX = event.offsetX;
+  finY = event.offsetY;
+  ajustarFigurarArrastrando(figuraEnCreacion, tamanoInicial, false);
+  dibujar();
+});
+
+window.addEventListener("mouseup", function() {
+  if (figuraEnCreacion == null) {
+    return;
+  }
+
+  ajustarFigurarArrastrando(figuraEnCreacion, tamanoInicial, true);
+  figuraEnCreacion = null;
+  creando = false;
+  formulario.innerHTML = "";
+  dibujar();
+});
 
    function crearContorno(figura) {
   const contorno = new Path2D();
@@ -194,9 +221,9 @@ canvas.addEventListener("click", function(event) {
 
 const botonBorrarFigura = document.getElementById("boton-borrar-figura");
 
-if (botonBorrarFigura !== null) {
+if (botonBorrarFigura != null) {
   botonBorrarFigura.addEventListener("click", function() {
-    if (figuraSeleccionada === null) {
+    if (figuraSeleccionada == null) {
       return;
     }
 
@@ -205,5 +232,76 @@ if (botonBorrarFigura !== null) {
 
     figuraSeleccionada = null;
     dibujar();
+  });
+}
+const botonEditarFigura = document.getElementById("boton-editar-figura");
+const formularioEditar = document.getElementById("form-editar");
+
+if (botonEditarFigura !== null) {
+  botonEditarFigura.addEventListener("click", function() {
+    if (figuraSeleccionada === null) {
+      return;
+    }
+
+    creando = false;
+    formulario.innerHTML = "";
+
+    let tamanoActual = 100;
+    if (figuraSeleccionada.tipo === "Cuadrado") {
+      tamanoActual = figuraSeleccionada.grandaria;
+    } else if (figuraSeleccionada.tipo === "Circulo") {
+      tamanoActual = figuraSeleccionada.radios * 2;
+    } else if (figuraSeleccionada.tipo === "Triangulo") {
+      tamanoActual = figuraSeleccionada.y2 - figuraSeleccionada.y1;
+    }
+
+    formularioEditar.innerHTML = `
+      <div>
+    <input type="number" id="tamano-editar" value="${tamanoActual}">
+  </div>
+  <div>
+    <input type="checkbox" id="relleno-editar">
+    <label for="relleno-editar">Con relleno</label>
+  </div>
+  <button type="button" id="boton-aplicar">Aplicar</button>
+`;
+
+document.getElementById("relleno-editar").checked = figuraSeleccionada.tieneRelleno;
+    document.getElementById("boton-aplicar").addEventListener("click", function() {
+      const tamano = Number(document.getElementById("tamano-editar").value) || 100;
+      const conRelleno = document.getElementById("relleno-editar").checked;
+
+      if (figuraSeleccionada.tipo == "Cuadrado") {
+        figuraSeleccionada.grandaria = tamano;
+      } else if (figuraSeleccionada.tipo == "Circulo") {
+        figuraSeleccionada.radios = tamano / 2;
+      } else if (figuraSeleccionada.tipo == "Triangulo") {
+        figuraSeleccionada.x1 = figuraSeleccionada.x;
+        figuraSeleccionada.y1 = figuraSeleccionada.y - tamano / 2;
+        figuraSeleccionada.x2 = figuraSeleccionada.x + tamano / 2;
+        figuraSeleccionada.y2 = figuraSeleccionada.y + tamano / 2;
+        figuraSeleccionada.x3 = figuraSeleccionada.x - tamano / 2;
+        figuraSeleccionada.y3 = figuraSeleccionada.y + tamano / 2;
+      }
+
+      figuraSeleccionada.tieneRelleno = conRelleno;
+      formularioEditar.innerHTML = "";
+      dibujar();
+    });
+  });
+}
+
+const botonGuardar = document.getElementById("form-guardar");
+
+if (botonGuardar !== null) {
+  botonGuardar.addEventListener("submit", function() {
+    const datosCanvas = document.getElementById("canvas-datos");
+    const canvasId = datosCanvas.getAttribute("data-id");
+
+    for (const figura of figuras) {
+      figura.canvasId = Number(canvasId);
+    }
+
+    document.getElementById("figurasGuardar").value = JSON.stringify(figuras);
   });
 }

@@ -83,6 +83,7 @@
       <h4 id="titulo-figura"></h4>
 
       <div id="form"></div>
+      <div id="form-editar"></div>
     
       <div th:if="${esEditor}">
   <button type="button" id="boton-editar-figura">
@@ -144,6 +145,14 @@
         <button
           type="submit"
           id="eliminar-canvas">Eliminar</button>
+          </form>
+          <form id="form-guardar"
+                th:if="${canvasSeleccionado != null}"
+                th:action="@{'/paint/' + ${canvasSeleccionado.id} + '/guardar'}"
+                method="post">
+              <input type="text" name="nombre" th:value="${canvasSeleccionado.nombre}">
+              <input type="hidden" id="figurasGuardar" name="figuras">
+              <button type="submit">Guardar canvas</button>
           </form>
       </div>
     </div>
