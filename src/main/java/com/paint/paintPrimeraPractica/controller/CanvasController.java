@@ -2,6 +2,7 @@ package com.paint.paintPrimeraPractica.controller;
 
 import com.paint.paintPrimeraPractica.Respository.UserRepo;
 import com.paint.paintPrimeraPractica.Service.CanvasService;
+import com.paint.paintPrimeraPractica.Service.FigurasService;
 import com.paint.paintPrimeraPractica.Service.UserService;
 import com.paint.paintPrimeraPractica.model.Canvas;
 import com.paint.paintPrimeraPractica.model.User;
@@ -23,12 +24,16 @@ public class CanvasController {
     CanvasService canvasService;
     @Autowired
     UserService userService;
+    @Autowired
+    FigurasService figurasService;
     @GetMapping("/paint")
     public String mostrarPaint(Model model, HttpSession session){
         int idUser=(int) session.getAttribute("idUser");
         model.addAttribute("todosLosCanvasUsuario", canvasService.buscarCanvasDelUsuario(idUser));
         model.addAttribute("todosLosCanvas", canvasService.buscarTodosCanvas());
         model.addAttribute("idUser", idUser);
+        model.addAttribute("esEditor",false);
+        model.addAttribute("figurasJson", "[]");
         return "paint";
     }
 
@@ -40,17 +45,29 @@ public class CanvasController {
     model.addAttribute("canvasSeleccionado", canvas);
     model.addAttribute("todosLosCanvasUsuario",canvasService.buscarCanvasDelUsuario(idUser));
     model.addAttribute("todosLosCanvas",canvasService.buscarTodosCanvas());
-    model.addAttribute("esEditor",esEditor);
+        model.addAttribute("nombreCanvas", canvas.getNombre());
+        model.addAttribute("figurasJson", figurasService.crearJson(id));
         model.addAttribute("idUser", idUser);
+        model.addAttribute("esEditor", esEditor);
     return "paint";
     }
 
     @PostMapping("/paint/eliminarCanvas/{id}")
     public String eliminarCanvas(@PathVariable int id, HttpSession session ){
+        int idUser = (int) session.getAttribute("idUser");
 
-        Canvas canvas = canvasService.buscarCanvas(id);
         canvasService.eliminarCanvas(id);
         return "redirect:/paint";
+    }
+
+    @PostMapping("/paint/{id}/guardar")
+    public String guardarCanvas (@PathVariable int id, @RequestParam String figuras, HttpSession session){
+        int idUser=(int) session.getAttribute("idUser");
+        Canvas canvas =canvasService.buscarCanvas(id);
+        if (canvas == null || canvas.getIdUser() != idUser) {
+            return "redirect:/paint";
+        }
+        return "redirect:/paint/"+id;
     }
 
 

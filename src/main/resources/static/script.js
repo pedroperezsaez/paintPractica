@@ -1,172 +1,209 @@
-const cuadrado = {
-    tamaño: 100,
-    color: "red",
-    posicionX: 200,
-    posicionY: 150,
-    relleno: true
-};
-let cuadrados=[];
-
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-let cuadradoSeleccionado=null;
 
+const figuras = [];
+let relleno = false;
+let creando = false;
+let figuraSeleccionada = null;
+let tipoFigura = "";
 
+const formulario = document.getElementById("form");
+
+function mostrarOpciones() {
+  relleno = false;
+
+  formulario.innerHTML = `
+    <div>
+      <input type="checkbox" id="relleno">
+      <label for="relleno">Con relleno</label>
+    </div>
+    <div>
+      <input type="number" id="tamano" placeholder="Tamaño">
+    </div>
+  `;
+
+  creando = true;
+
+  const casilla = document.getElementById("relleno");
+
+  casilla.addEventListener("change", function() {
+    if (casilla.checked) {
+      relleno = true;
+    } else {
+      relleno = false;
+    }
+  });
+}
+
+const botones = [
+  document.getElementById("boton-cuadrado"),
+  document.getElementById("boton-triangulo"),
+  document.getElementById("boton-circulo"),
+  document.getElementById("boton-estrella")
+];
+
+for (const boton of botones) {
+  boton.addEventListener("click", function() {
+    tipoFigura = boton.getAttribute("data-tipo");
+    mostrarOpciones();
+  });
+}
 canvas.addEventListener("click",(event)=>{
-  if(cuadradoSeleccionado !=null){
-    editarEliminarFigura()
+    if(creando == false){
+        return;
+    }
+    const tamano= Number(document.getElementById("tamano").value)
+   const x= event.offsetX;
+   const y= event.offsetY;
+   let figura;
+   if(tipoFigura=="Cuadrado"){
+   figura={ tipo: "Cuadrado",
+      x: x,
+      y: y,
+      grandaria: tamano,
+      color: "red",
+      tieneRelleno: relleno
+   };
+}else if(tipoFigura=="Triangulo"){
+     figura = {
+      tipo: "Triangulo",
+      x: x,
+      y: y,
+      x1: x,
+      y1: y - tamano / 2,
+      x2: x + tamano / 2,
+      y2: y + tamano / 2,
+      x3: x - tamano / 2,
+      y3: y + tamano / 2,
+      color: "red",
+      tieneRelleno: relleno
+    };
+} else if (tipoFigura === "Circulo") {
+    figura = {
+      tipo: "Circulo",
+      x: x,
+      y: y,
+      radios: tamano / 2,
+      color: "red",
+      tieneRelleno: relleno
+    };
+}else {
+    figura = {
+      tipo: "Estrella",
+      x: x,
+      y: y,
+      grandaria: tamano,
+      color: "red",
+      tieneRelleno: relleno
+    };
+}
+figuras.push(figura)
+dibujar()
+creando=false;
+formulario.innerHTML="";
+
+   } )
+
+
+   function crearContorno(figura) {
+  const contorno = new Path2D();
+
+  if (figura.tipo == "Cuadrado") {
+    contorno.rect(figura.x, figura.y, figura.grandaria, figura.grandaria);
+  } else if (figura.tipo == "Circulo") {
+    contorno.arc(figura.x, figura.y, figura.radios, 0, 2 * Math.PI);
+  } else if (figura.tipo == "Triangulo") {
+    contorno.moveTo(figura.x1, figura.y1);
+    contorno.lineTo(figura.x2, figura.y2);
+    contorno.lineTo(figura.x3, figura.y3);
+    contorno.closePath();
   }
-  for(let i=0; i<cuadrados.length;i++){
-    const cuadrado=cuadrados[i];
-    const figura=new Path2D();
-    figura.rect(
-      cuadrado.posicionX,
-      cuadrado.posicionY,
-      cuadrado.tamaño,
-      cuadrado.tamaño
-    )
-    const encima=ctx.isPointInPath(
-      figura,
-      event.offsetX,
-      event.offsetY
-    )
-     if (encima) {
-            cuadradoSeleccionado=i;
-        }
-  }
-})
-function  editarEliminarFigura(){
-  const cuadrado=cuadrados[cuadradoSeleccionado]
-  form.innerHTML=`
-        <div>
-            <input type="checkbox" id="checkLabel" ${cuadrado.relleno ? "checked" : ""}>
-            <label for="checkLabel">Con relleno</label>
-        </div>
-        <div>
-            <label for="sizesInputSmall">Tamaño</label>
-            <input type="number" id="sizesInputSmall" value="${cuadrado.tamaño}">
-        </div>
 
-        <button type="button" id="modificarCuadrado">Modificar</button>
-        <button type="button" id="eliminarCuadrado">Eliminar</button>
-    `
-
-    document.getElementById("modificarCuadrado").addEventListener("click",()=>{
-      cuadrados[cuadradoSeleccionado].relleno= document.getElementById("checkLabel").checked
-      cuadrados[cuadradoSeleccionado].tamaño = document.getElementById("sizesInputSmall").value
-      dibujarCuadrados()
-    })
-
-    document.getElementById("eliminarCuadrado").addEventListener("click",()=>{
-      cuadrados.splice(cuadradoSeleccionado,1)
-      form.innerHTML=""
-      cuadradoSeleccionado=null;
-      dibujarCuadrados();
-    })
+  return contorno;
 }
 
+function dibujar() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  for (const figura of figuras) {
+    const contorno = crearContorno(figura);
 
-const botonCuadrado = document.getElementById("boton-cuadrado");
-const form = document.getElementById("form");
-const tituloFigura = document.getElementById("titulo-figura");
+    ctx.fillStyle = figura.color;
+    ctx.strokeStyle = figura.color;
 
-let grandariaCuadrado = 0;
-let tieneRellenoCuadrado = false;
-let cuadradoActivo = false;
-
-botonCuadrado.addEventListener("click", () => {
-
-    form.innerHTML = `
-        <div class="form-field">
-            <input type="checkbox" id="checkLabel" class="check">
-            <label for="checkLabel">Con relleno</label>
-        </div>
-        <div>
-            <label for="sizesInputSmall">Escribe el tamaño</label>
-            <input type="number" id="sizesInputSmall" class="form-control form-control-sm" placeholder="Tamaño">
-        </div>
-        <button type="button" id="crearCuadrado">Crear cuadrado</button>
-    `;
-
-    tituloFigura.innerHTML = "Cuadrado";
-
-    const crearCuadrado = document.getElementById("crearCuadrado");
-
-    crearCuadrado.addEventListener("click", () => {
-        cuadrado.relleno = document.getElementById("checkLabel").checked;
-    cuadrado.tamaño = Number(document.getElementById("sizesInputSmall").value);
-    cuadradoActivo = true;
-    });
-});
-
-canvas.addEventListener("click", (event) => {
-
-   if (cuadradoActivo) {
-
-        cuadrado.posicionX = event.offsetX;
-        cuadrado.posicionY = event.offsetY;
-
-        if (cuadrado.relleno) {
-            ctx.fillStyle = cuadrado.color;
-
-            ctx.fillRect(
-                cuadrado.posicionX,
-                cuadrado.posicionY,
-                cuadrado.tamaño,
-                cuadrado.tamaño
-            );
-        }
-
-        ctx.strokeStyle = cuadrado.color;
-
-        ctx.strokeRect(
-            cuadrado.posicionX,
-            cuadrado.posicionY,
-            cuadrado.tamaño,
-            cuadrado.tamaño
-        );
-        cuadrados.push({
-    tamaño: cuadrado.tamaño,
-    color: cuadrado.color,
-    posicionX: cuadrado.posicionX,
-    posicionY: cuadrado.posicionY,
-    relleno: cuadrado.relleno
-});
-  dibujarCuadrados();
-
-        cuadradoActivo = false;
-        
-    }
-});
-
-
-
-function dibujarCuadrados() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < cuadrados.length; i++) {
-        const cuadrado = cuadrados[i];
-        ctx.fillStyle = cuadrado.color;
-        ctx.strokeStyle = cuadrado.color;
-
-        if (cuadrado.relleno) {
-            ctx.fillRect(
-                cuadrado.posicionX,
-                cuadrado.posicionY,
-                cuadrado.tamaño,
-                cuadrado.tamaño
-            );
-        }
-
-        ctx.strokeRect(
-            cuadrado.posicionX,
-            cuadrado.posicionY,
-            cuadrado.tamaño,
-            cuadrado.tamaño
-        );
+    if (figura.tieneRelleno) {
+      ctx.fill(contorno);
+    } else {
+      ctx.stroke(contorno);
     }
 
-
+    if (figura === figuraSeleccionada) {
+      ctx.strokeStyle = "blue";
+      ctx.lineWidth = 3;
+      ctx.stroke(contorno);
+      ctx.lineWidth = 1;
+    }
+  }
 }
 
-const figurasJson=JSON.parse(document.getElementById("datosFiguras").textContent)
+ const datosFiguras = document.getElementById("datosFiguras");
+const textoFiguras = datosFiguras.textContent.trim();
+
+if (textoFiguras !== "") {
+const figurasGuardadas = JSON.parse(textoFiguras);
+
+  for (const figura of figurasGuardadas) {
+    figuras.push(figura);
+  }
+}
+
+dibujar();
+   
+
+
+
+
+
+canvas.addEventListener("click", function(event) {
+  if (creando === true) {
+    return;
+  }
+
+  ctx.lineWidth = 8;
+  let encontrado = null;
+
+  for (const figura of figuras) {
+    const contorno = crearContorno(figura);
+
+    let dentro;
+    if (figura.tieneRelleno) {
+      dentro = ctx.isPointInPath(contorno, event.offsetX, event.offsetY);
+    } else {
+      dentro = ctx.isPointInStroke(contorno, event.offsetX, event.offsetY);
+    }
+
+    if (dentro) {
+      encontrado = figura;
+    }
+  }
+
+  ctx.lineWidth = 1;
+  figuraSeleccionada = encontrado;
+  dibujar();
+});
+
+const botonBorrarFigura = document.getElementById("boton-borrar-figura");
+
+if (botonBorrarFigura !== null) {
+  botonBorrarFigura.addEventListener("click", function() {
+    if (figuraSeleccionada === null) {
+      return;
+    }
+
+    const posicion = figuras.indexOf(figuraSeleccionada);
+    figuras.splice(posicion, 1);
+
+    figuraSeleccionada = null;
+    dibujar();
+  });
+}
