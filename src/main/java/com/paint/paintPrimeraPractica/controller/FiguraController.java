@@ -1,4 +1,4 @@
-package com.paint.paintPrimeraPractica.controller;
+/*package com.paint.paintPrimeraPractica.controller;
 
 import com.paint.paintPrimeraPractica.Service.FigurasService;
 import com.paint.paintPrimeraPractica.model.Figura;
@@ -19,7 +19,7 @@ public class FiguraController {
 
     @GetMapping(value="/figuras/{id}")
 public String enviarJson(@PathVariable int id, Model model){
-   List<Figura> figurasJson= figurasService.buscarTodasFigurasCanvas(id);
+        String figurasJson = figurasService.buscarTodasFigurasCanvas(id);
     model.addAttribute("figurasJson",figurasJson);
 
  return "/paint";
@@ -27,3 +27,5 @@ public String enviarJson(@PathVariable int id, Model model){
 }
 
 }
+
+ */

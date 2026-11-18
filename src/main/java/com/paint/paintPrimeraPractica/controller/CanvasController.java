@@ -40,27 +40,25 @@ public class CanvasController {
     @GetMapping("/paint/{id}")
     public String enviarCanvas(Model model, @PathVariable int id, HttpSession session) {
     int idUser=(int) session.getAttribute("idUser");
-    Canvas canvas=canvasService.buscarCanvas(id);
-    boolean esEditor=canvas.getIdUser()== idUser;
-    model.addAttribute("canvasSeleccionado", canvas);
-    model.addAttribute("todosLosCanvasUsuario",canvasService.buscarCanvasDelUsuario(idUser));
-    model.addAttribute("todosLosCanvas",canvasService.buscarTodosCanvas());
-        model.addAttribute("nombreCanvas", canvas.getNombre());
-        model.addAttribute("figurasJson", figurasService.crearJson(id));
+        Canvas canvas=canvasService.buscarCanvas(id);
+        boolean esEditor=canvasService.buscarIdUser(id) == idUser;
+        model.addAttribute("canvasSeleccionado", canvas);
+        model.addAttribute("todosLosCanvasUsuario",canvasService.buscarCanvasDelUsuario(idUser));
+        model.addAttribute("todosLosCanvas",canvasService.buscarTodosCanvas());
+        model.addAttribute("nombreCanvas", canvasService.buscarNombre(id));
         model.addAttribute("idUser", idUser);
         model.addAttribute("esEditor", esEditor);
+        model.addAttribute("figurasJson", canvasService.buscarFigurasJson(id));
     return "paint";
     }
 
     @PostMapping("/paint/eliminarCanvas/{id}")
     public String eliminarCanvas(@PathVariable int id, HttpSession session ){
         int idUser = (int) session.getAttribute("idUser");
-        Canvas canvas = canvasService.buscarCanvas(id);
 
-        if (canvas.getIdUser() != idUser) {
+        if (canvasService.buscarCanvas(id) == null || canvasService.buscarIdUser(id) != idUser) {
             return "redirect:/paint";
         }
-
         canvasService.eliminarCanvas(id);
         return "redirect:/paint";
     }
@@ -69,13 +67,12 @@ public class CanvasController {
     public String guardarCanvas(@PathVariable int id, @RequestParam String figuras,
                                 @RequestParam String nombre, HttpSession session){
         int idUser=(int) session.getAttribute("idUser");
-        Canvas canvas =canvasService.buscarCanvas(id);
-        if (canvas == null || canvas.getIdUser() != idUser) {
+        if (canvasService.buscarCanvas(id) == null || canvasService.buscarIdUser(id) != idUser) {
             return "redirect:/paint";
         }
 
-        canvas.setNombre(nombre);
-        figurasService.guardarFiguras(figuras, id);
+        canvasService.guardarNombre(id, nombre);
+        canvasService.guardarFiguras(id, figuras);
 
         return "redirect:/paint/"+id;
     }

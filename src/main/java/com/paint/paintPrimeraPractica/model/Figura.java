@@ -11,7 +11,9 @@ public class Figura {
 
 
 
-    Figura(String tipo, int id, int x, int y, String color, boolean tieneRelleno,int canvasId){
+
+
+    Figura(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId){
         this.tipo=tipo;
         this.id=id;
         this.x=x;
@@ -19,6 +21,8 @@ public class Figura {
         this.color=color;
         this.tieneRelleno=tieneRelleno;
         this.canvasId=canvasId;
+
+
     }
     public int getCanvasId() {
         return canvasId;
@@ -30,6 +34,8 @@ public class Figura {
     public String getTipo() {
         return tipo;
     }
+
+
 
     public void setTipo(String tipo) {
         this.tipo = tipo;

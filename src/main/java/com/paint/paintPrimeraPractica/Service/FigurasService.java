@@ -16,7 +16,7 @@ public interface FigurasService {
                           boolean tieneRelleno,int canvasId,int x1,int y1, int x2, int y2, int x3, int y3);
     void agregarTrazo(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId,
                       List<PosicionPunto> posicionPuntos);
-    List<Figura> buscarTodasFigurasCanvas(int canvasId);
+    String buscarTodasFigurasCanvas(int canvasId);
     String crearJson(int canvasId);
     void guardarFiguras(String json, int canvasId);
 }

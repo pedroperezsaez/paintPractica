@@ -19,9 +19,9 @@ public class CanvasServiceImpl implements CanvasService{
     }
 
     @Override
-    public int agregarCanvas(String nombre, List<Figura> figuras, int idUser) {
+    public int agregarCanvas(String nombre, List<Figura> figuras, int idUser,String figurasJson) {
         int id = contador++;
-        canvasRepo.agregarCanvas(id, nombre, figuras, idUser);
+        canvasRepo.agregarCanvas(id, nombre, figuras, idUser,figurasJson);
         return id;
     }
 
@@ -40,5 +40,29 @@ public class CanvasServiceImpl implements CanvasService{
     @Override
     public List<Canvas> buscarCanvasDelUsuario(int idUser) {
         return canvasRepo.buscarTodosCanvas().stream().filter(i->i.getIdUser()==idUser).toList();
+    }
+
+    @Override
+    public void guardarFiguras(int id, String json) {
+        canvasRepo.guardarFiguras(id, json);
+    }
+    @Override
+    public String buscarFigurasJson(int id) {
+        return canvasRepo.buscarFigurasJson(id);
+    }
+
+    @Override
+    public String buscarNombre(int id) {
+        return canvasRepo.buscarNombre(id);
+    }
+
+    @Override
+    public int buscarIdUser(int id) {
+        return canvasRepo.buscarIdUser(id);
+    }
+
+    @Override
+    public void guardarNombre(int id, String nombre) {
+        canvasRepo.guardarNombre(id, nombre);
     }
 }

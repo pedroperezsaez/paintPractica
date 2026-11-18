@@ -8,11 +8,20 @@ public class Canvas {
     private List<Figura> figuras;
     private int idUser;
     private String figurasJson;
-    public Canvas(int id, String nombre, List<Figura> figuras, int idUser){
+    public Canvas(int id, String nombre, List<Figura> figuras, int idUser, String figurasJson){
         this.id=id;
         this.nombre=nombre;
         this.figuras=figuras;
         this.idUser=idUser;
+        this.figurasJson=figurasJson;
+    }
+
+    public String getFigurasJson() {
+        return figurasJson;
+    }
+
+    public void setFigurasJson(String figurasJson) {
+        this.figurasJson = figurasJson;
     }
 
     public int getIdUser() {

@@ -38,7 +38,7 @@ public class LoginController {
             session.setAttribute("username", username);
             session.setAttribute("idUser", user.getId());
 
-            int idCanvas = canvasService.agregarCanvas("Nuevo canvas", new ArrayList<>(), user.getId());
+            int idCanvas = canvasService.agregarCanvas("Nuevo canvas", new ArrayList<>(), user.getId(), "");
             return "redirect:/paint/" + idCanvas;
         }
 

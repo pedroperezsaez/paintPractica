@@ -45,7 +45,8 @@ const botones = [
   document.getElementById("boton-cuadrado"),
   document.getElementById("boton-triangulo"),
   document.getElementById("boton-circulo"),
-  document.getElementById("boton-estrella")
+  document.getElementById("boton-estrella"),
+  document.getElementById("boton-trazado")
 ];
 for (const boton of botones) {
   if (boton !== null) {
@@ -79,6 +80,11 @@ function ajustarFigurarArrastrando(figura,tamanoPorDefecto,esFinal){
     figura.x3 = figura.x - tamano / 2;
     figura.y3 = figura.y + tamano / 2;
   }
+   else if (figura.tipo === "Estrella") {
+    figura.x = (inicioX + finX) / 2;
+    figura.y = (inicioY + finY) / 2;
+    figura.grandaria = tamano;
+}
 
 }
 
@@ -86,10 +92,7 @@ canvas.addEventListener("mousedown", function(event) {
   if (creando == false) {
     return;
   }
-
- 
-
-
+  console.log("TIPO:", tipoFigura, "CREANDO:", creando);
   inicioX = event.offsetX;
   inicioY = event.offsetY;
   finX = inicioX;
@@ -104,6 +107,11 @@ canvas.addEventListener("mousedown", function(event) {
     tieneRelleno: relleno
   };
 
+  if (tipoFigura === "Trazado") {
+    figuraEnCreacion.posicionPuntos = [{ x: inicioX, y: inicioY }];
+    figuraEnCreacion.tieneRelleno = false;
+  }
+
   figuras.push(figuraEnCreacion);
   ajustarFigurarArrastrando(figuraEnCreacion, tamanoInicial, false);
   dibujar();
@@ -116,7 +124,13 @@ canvas.addEventListener("mousemove", function(event) {
 
   finX = event.offsetX;
   finY = event.offsetY;
-  ajustarFigurarArrastrando(figuraEnCreacion, tamanoInicial, false);
+
+  if (figuraEnCreacion.tipo === "Trazado") {
+    figuraEnCreacion.posicionPuntos.push({ x: finX, y: finY });
+  } else {
+    ajustarFigurarArrastrando(figuraEnCreacion, tamanoInicial, false);
+  }
+
   dibujar();
 });
 
@@ -125,7 +139,10 @@ window.addEventListener("mouseup", function() {
     return;
   }
 
-  ajustarFigurarArrastrando(figuraEnCreacion, tamanoInicial, true);
+  if (figuraEnCreacion.tipo !== "Trazado") {
+    ajustarFigurarArrastrando(figuraEnCreacion, tamanoInicial, true);
+  }
+
   figuraEnCreacion = null;
   creando = false;
   formulario.innerHTML = "";
@@ -144,6 +161,40 @@ window.addEventListener("mouseup", function() {
     contorno.lineTo(figura.x2, figura.y2);
     contorno.lineTo(figura.x3, figura.y3);
     contorno.closePath();
+  } else if (figura.tipo == "Estrella") {
+    const radio = figura.grandaria / 2;
+    const radioInterior = radio / 2;
+
+    for (let i = 0; i < 10; i++) {
+      const angulo = (Math.PI / 5) * i - Math.PI / 2;
+
+      let distancia;
+      if (i % 2 == 0) {
+        distancia = radio;
+      } else {
+        distancia = radioInterior;
+      }
+
+      const xPunto = figura.x + Math.cos(angulo) * distancia;
+      const yPunto = figura.y + Math.sin(angulo) * distancia;
+
+      if (i === 0) {
+        contorno.moveTo(xPunto, yPunto);
+      } else {
+        contorno.lineTo(xPunto, yPunto);
+      }
+    }
+    contorno.closePath();
+  } else if (figura.tipo == "Trazado") {
+    for (let i = 0; i < figura.posicionPuntos.length; i++) {
+      const punto = figura.posicionPuntos[i];
+
+      if (i === 0) {
+        contorno.moveTo(punto.x, punto.y);
+      } else {
+        contorno.lineTo(punto.x, punto.y);
+      }
+    }
   }
 
   return contorno;
@@ -237,9 +288,9 @@ if (botonBorrarFigura != null) {
 const botonEditarFigura = document.getElementById("boton-editar-figura");
 const formularioEditar = document.getElementById("form-editar");
 
-if (botonEditarFigura !== null) {
+if (botonEditarFigura != null) {
   botonEditarFigura.addEventListener("click", function() {
-    if (figuraSeleccionada === null) {
+    if (figuraSeleccionada == null) {
       return;
     }
 
@@ -247,26 +298,29 @@ if (botonEditarFigura !== null) {
     formulario.innerHTML = "";
 
     let tamanoActual = 100;
-    if (figuraSeleccionada.tipo === "Cuadrado") {
+    if (figuraSeleccionada.tipo == "Cuadrado") {
       tamanoActual = figuraSeleccionada.grandaria;
-    } else if (figuraSeleccionada.tipo === "Circulo") {
+    } else if (figuraSeleccionada.tipo == "Circulo") {
       tamanoActual = figuraSeleccionada.radios * 2;
-    } else if (figuraSeleccionada.tipo === "Triangulo") {
+    } else if (figuraSeleccionada.tipo == "Triangulo") {
       tamanoActual = figuraSeleccionada.y2 - figuraSeleccionada.y1;
+    } else if (figuraSeleccionada.tipo == "Estrella") {
+      tamanoActual = figuraSeleccionada.grandaria;
     }
 
     formularioEditar.innerHTML = `
       <div>
-    <input type="number" id="tamano-editar" value="${tamanoActual}">
-  </div>
-  <div>
-    <input type="checkbox" id="relleno-editar">
-    <label for="relleno-editar">Con relleno</label>
-  </div>
-  <button type="button" id="boton-aplicar">Aplicar</button>
-`;
+        <input type="number" id="tamano-editar" value="${tamanoActual}">
+      </div>
+      <div>
+        <input type="checkbox" id="relleno-editar">
+        <label for="relleno-editar">Con relleno</label>
+      </div>
+      <button type="button" id="boton-aplicar">Aplicar</button>
+    `;
 
-document.getElementById("relleno-editar").checked = figuraSeleccionada.tieneRelleno;
+    document.getElementById("relleno-editar").checked = figuraSeleccionada.tieneRelleno;
+
     document.getElementById("boton-aplicar").addEventListener("click", function() {
       const tamano = Number(document.getElementById("tamano-editar").value) || 100;
       const conRelleno = document.getElementById("relleno-editar").checked;
@@ -282,6 +336,8 @@ document.getElementById("relleno-editar").checked = figuraSeleccionada.tieneRell
         figuraSeleccionada.y2 = figuraSeleccionada.y + tamano / 2;
         figuraSeleccionada.x3 = figuraSeleccionada.x - tamano / 2;
         figuraSeleccionada.y3 = figuraSeleccionada.y + tamano / 2;
+      } else if (figuraSeleccionada.tipo == "Estrella") {
+        figuraSeleccionada.grandaria = tamano;
       }
 
       figuraSeleccionada.tieneRelleno = conRelleno;
@@ -290,7 +346,6 @@ document.getElementById("relleno-editar").checked = figuraSeleccionada.tieneRell
     });
   });
 }
-
 const botonGuardar = document.getElementById("form-guardar");
 
 if (botonGuardar !== null) {

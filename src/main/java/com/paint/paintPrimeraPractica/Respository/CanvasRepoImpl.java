@@ -10,9 +10,9 @@ import java.util.List;
 public class CanvasRepoImpl implements CanvasRepo{
     private final List<Canvas> canvasList= new ArrayList<>();
     public CanvasRepoImpl(){
-        canvasList.add(new Canvas(1, "dibujo", new ArrayList<>(), 1));
-        canvasList.add(new Canvas(2, "Paisaje", new ArrayList<>(), 1));
-        canvasList.add(new Canvas(3, "Figuras", new ArrayList<>(), 2));
+        canvasList.add(new Canvas(1, "dibujo", new ArrayList<>(), 1,""));
+        canvasList.add(new Canvas(2, "Paisaje", new ArrayList<>(), 1,""));
+        canvasList.add(new Canvas(3, "Figuras", new ArrayList<>(), 2,""));
     }
     @Override
     public Canvas buscarCanvas(int id) {
@@ -25,8 +25,8 @@ public class CanvasRepoImpl implements CanvasRepo{
     }
 
     @Override
-    public void agregarCanvas(int id, String nombre, List<Figura> figuras, int idUser) {
-        Canvas canvas=new Canvas(id,nombre,figuras,idUser);
+    public void agregarCanvas(int id, String nombre, List<Figura> figuras, int idUser,String figurasJson) {
+        Canvas canvas=new Canvas(id,nombre,figuras,idUser,figurasJson);
         canvasList.add(canvas);
 
 
@@ -39,5 +39,36 @@ public class CanvasRepoImpl implements CanvasRepo{
                 canvasList.remove(i);
             }
         }
+    }
+
+
+    public void guardarFiguras(int id, String json) {
+        buscarCanvas(id).setFigurasJson(json);
+    }
+
+    @Override
+    public String buscarFigurasJson(int id) {
+        Canvas canvas = buscarCanvas(id);
+
+        return canvas.getFigurasJson();
+    }
+
+    @Override
+    public String buscarNombre(int id) {
+        Canvas canvas = buscarCanvas(id);
+
+        return canvas.getNombre();
+    }
+
+    @Override
+    public int buscarIdUser(int id) {
+        Canvas canvas = buscarCanvas(id);
+        return canvas.getIdUser();
+    }
+
+    @Override
+    public void guardarNombre(int id, String nombre) {
+        Canvas canvas = buscarCanvas(id);
+        canvas.setNombre(nombre);
     }
 }
