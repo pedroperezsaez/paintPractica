@@ -13,12 +13,13 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     public boolean checkRegister(String username, String password) {
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() || password.length()<5) {
             return false;
         }
         if (userRepo.buscarUser(username) != null) {
             return false;
         }
+
         userRepo.addUser(username, password,contadorId);
         contadorId++;
 

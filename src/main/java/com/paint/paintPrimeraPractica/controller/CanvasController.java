@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -65,16 +66,30 @@ public class CanvasController {
 
     @PostMapping("/paint/{id}/guardar")
     public String guardarCanvas(@PathVariable int id, @RequestParam String figuras,
-                                @RequestParam String nombre, HttpSession session){
+                                @RequestParam String nombre,
+                                @RequestParam int numObjetos, HttpSession session){
         int idUser=(int) session.getAttribute("idUser");
         if (canvasService.buscarCanvas(id) == null || canvasService.buscarIdUser(id) != idUser) {
             return "redirect:/paint";
         }
 
+        nombre = nombre.trim();
+        if (nombre.isEmpty()) {
+            nombre = "Dibuix " + id;
+        }
+
         canvasService.guardarNombre(id, nombre);
         canvasService.guardarFiguras(id, figuras);
+        canvasService.guardarHistorial(id, numObjetos);
 
         return "redirect:/paint/"+id;
+    }
+
+    @GetMapping("/paint/nuevo")
+    public String nuevoCanvas(HttpSession session) {
+        int idUser = (int) session.getAttribute("idUser");
+        int idCanvas = canvasService.agregarCanvas("Nuevo canvas", new ArrayList<>(), idUser, "");
+        return "redirect:/paint/" + idCanvas;
     }
 
 

@@ -24,7 +24,7 @@ public class LoginController {
     @Autowired
     CanvasService canvasService;
 
-    @GetMapping("/login")
+    @GetMapping("/")
     public String login() {
         return "login";
     }
@@ -63,6 +63,10 @@ public class LoginController {
 
     */
 
-
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
 
 }

@@ -13,6 +13,7 @@ public class Figura {
 
 
 
+
     Figura(String tipo, int id, int x, int y, String color, boolean tieneRelleno, int canvasId){
         this.tipo=tipo;
         this.id=id;

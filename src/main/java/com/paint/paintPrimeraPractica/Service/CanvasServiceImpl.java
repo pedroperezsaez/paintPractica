@@ -65,4 +65,8 @@ public class CanvasServiceImpl implements CanvasService{
     public void guardarNombre(int id, String nombre) {
         canvasRepo.guardarNombre(id, nombre);
     }
+    @Override
+    public void guardarHistorial(int id, int numObjetos) {
+        canvasRepo.guardarHistorial(id, numObjetos);
+    }
 }

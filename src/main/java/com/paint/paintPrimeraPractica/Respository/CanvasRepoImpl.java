@@ -4,6 +4,7 @@ import com.paint.paintPrimeraPractica.model.Canvas;
 import com.paint.paintPrimeraPractica.model.Figura;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 @Repository
@@ -41,7 +42,7 @@ public class CanvasRepoImpl implements CanvasRepo{
         }
     }
 
-
+        @Override
     public void guardarFiguras(int id, String json) {
         buscarCanvas(id).setFigurasJson(json);
     }
@@ -71,4 +72,10 @@ public class CanvasRepoImpl implements CanvasRepo{
         Canvas canvas = buscarCanvas(id);
         canvas.setNombre(nombre);
     }
-}
+    @Override
+    public void guardarHistorial(int id, int numObjetos) {
+        Canvas canvas = buscarCanvas(id);
+        canvas.setNumObjetos(numObjetos);
+        canvas.setFechaModificacion(LocalDateTime.now().toString());
+    }
+    }

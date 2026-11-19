@@ -15,6 +15,7 @@ public interface CanvasRepo {
     public String buscarNombre(int id);
     public int buscarIdUser(int id);
     public void guardarNombre(int id, String nombre);
+    public void guardarHistorial(int id, int numObjetos);
 
 
 }

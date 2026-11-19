@@ -18,13 +18,21 @@ const formulario = document.getElementById("form");
 function mostrarOpciones() {
   relleno = false;
 
-  formulario.innerHTML = `
+ formulario.innerHTML = `
     <div>
       <input type="checkbox" id="relleno">
       <label for="relleno">Con relleno</label>
     </div>
     <div>
       <input type="number" id="tamano" placeholder="Tamaño">
+    </div>
+    <div>
+      <select id="color">
+        <option value="red">Rojo</option>
+        <option value="lime">Verde</option>
+        <option value="yellow">Amarillo</option>
+        <option value="dodgerblue">Azul</option>
+      </select>
     </div>
   `;
 
@@ -92,7 +100,6 @@ canvas.addEventListener("mousedown", function(event) {
   if (creando == false) {
     return;
   }
-  console.log("TIPO:", tipoFigura, "CREANDO:", creando);
   inicioX = event.offsetX;
   inicioY = event.offsetY;
   finX = inicioX;
@@ -103,9 +110,11 @@ canvas.addEventListener("mousedown", function(event) {
     tipo: tipoFigura,
     x: inicioX,
     y: inicioY,
-    color: "red",
+    color: document.getElementById("color").value,
     tieneRelleno: relleno
   };
+
+  ponerNombre(figuraEnCreacion);
 
   if (tipoFigura === "Trazado") {
     figuraEnCreacion.posicionPuntos = [{ x: inicioX, y: inicioY }];
@@ -114,6 +123,7 @@ canvas.addEventListener("mousedown", function(event) {
 
   figuras.push(figuraEnCreacion);
   ajustarFigurarArrastrando(figuraEnCreacion, tamanoInicial, false);
+  actualizarLista();
   dibujar();
 });
 
@@ -235,6 +245,7 @@ const figurasGuardadas = JSON.parse(textoFiguras);
   }
 }
 
+actualizarLista();
 dibujar();
    
 
@@ -266,7 +277,9 @@ canvas.addEventListener("click", function(event) {
   }
 
   ctx.lineWidth = 1;
+  
   figuraSeleccionada = encontrado;
+    actualizarLista();
   dibujar();
 });
 
@@ -278,10 +291,11 @@ if (botonBorrarFigura != null) {
       return;
     }
 
-    const posicion = figuras.indexOf(figuraSeleccionada);
+        const posicion = figuras.indexOf(figuraSeleccionada);
     figuras.splice(posicion, 1);
 
     figuraSeleccionada = null;
+    actualizarLista();
     dibujar();
   });
 }
@@ -308,18 +322,35 @@ if (botonEditarFigura != null) {
       tamanoActual = figuraSeleccionada.grandaria;
     }
 
-    formularioEditar.innerHTML = `
-      <div>
-        <input type="number" id="tamano-editar" value="${tamanoActual}">
+     formularioEditar.innerHTML = `
+      <div class="mb-3">
+        <label for="tamano-editar" class="form-label">Tamaño</label>
+        <input type="number" class="form-control"
+               id="tamano-editar" value="${tamanoActual}">
       </div>
-      <div>
-        <input type="checkbox" id="relleno-editar">
-        <label for="relleno-editar">Con relleno</label>
+
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="relleno-editar">
+        <label class="form-check-label" for="relleno-editar">Con relleno</label>
       </div>
-      <button type="button" id="boton-aplicar">Aplicar</button>
+
+      <div class="mb-3">
+        <label for="color-editar" class="form-label">Color</label>
+        <select class="form-select" id="color-editar">
+          <option value="red">Rojo</option>
+          <option value="lime">Verde</option>
+          <option value="yellow">Amarillo</option>
+          <option value="dodgerblue">Azul</option>
+        </select>
+      </div>
+
+      <button type="button" id="boton-aplicar" class="btn btn-primary w-100">
+        Aplicar
+      </button>
     `;
 
     document.getElementById("relleno-editar").checked = figuraSeleccionada.tieneRelleno;
+    document.getElementById("color-editar").value = figuraSeleccionada.color;
 
     document.getElementById("boton-aplicar").addEventListener("click", function() {
       const tamano = Number(document.getElementById("tamano-editar").value) || 100;
@@ -341,12 +372,13 @@ if (botonEditarFigura != null) {
       }
 
       figuraSeleccionada.tieneRelleno = conRelleno;
+      figuraSeleccionada.color = document.getElementById("color-editar").value;
       formularioEditar.innerHTML = "";
       dibujar();
     });
   });
 }
-const botonGuardar = document.getElementById("form-guardar");
+ const botonGuardar = document.getElementById("form-guardar");
 
 if (botonGuardar !== null) {
   botonGuardar.addEventListener("submit", function() {
@@ -358,5 +390,52 @@ if (botonGuardar !== null) {
     }
 
     document.getElementById("figurasGuardar").value = JSON.stringify(figuras);
+    document.getElementById("numObjetos").value = figuras.length;
   });
+}
+
+function actualizarLista() {
+  const lista = document.getElementById("lista-figuras");
+  lista.innerHTML = "";
+
+  for (let i = 0; i < figuras.length; i++) {
+    const item = document.createElement("li");
+    item.textContent = (i + 1) + ". " + figuras[i].tipo;
+
+    if (figuras[i] === figuraSeleccionada) {
+      item.style.fontWeight = "bold";
+    }
+
+    lista.appendChild(item);
+  }
+}
+const botonMisCanvas = document.getElementById("boton-mis-canvas");
+const botonOtrosCanvas = document.getElementById("boton-otros-canvas");
+
+if (botonMisCanvas !== null && botonOtrosCanvas !== null) {
+  botonMisCanvas.addEventListener("click", function() {
+    document.getElementById("lista-mis-canvas").style.display = "block";
+    document.getElementById("lista-otros-canvas").style.display = "none";
+    botonMisCanvas.classList.add("activa");
+    botonOtrosCanvas.classList.remove("activa");
+  });
+
+  botonOtrosCanvas.addEventListener("click", function() {
+    document.getElementById("lista-otros-canvas").style.display = "block";
+    document.getElementById("lista-mis-canvas").style.display = "none";
+    botonOtrosCanvas.classList.add("activa");
+    botonMisCanvas.classList.remove("activa");
+  });
+}
+function ponerNombre(figura) {
+  figura.nombre = figura.tipo + " " + (figuras.length + 1);
+}
+const enlacesCanvas = document.querySelectorAll("#lista-mis-canvas a.lista-canvas");
+let contador = 1;
+
+for (const enlace of enlacesCanvas) {
+  if (enlace.textContent.trim() === "Nuevo canvas") {
+    enlace.textContent = "Canvas " + contador;
+    contador++;
+  }
 }
