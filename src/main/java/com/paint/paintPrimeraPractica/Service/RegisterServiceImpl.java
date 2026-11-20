@@ -9,7 +9,7 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Autowired
     UserRepo userRepo;
-    int contadorId=1;
+    int contadorId=3;
     @Override
     public boolean checkRegister(String username, String password) {
 

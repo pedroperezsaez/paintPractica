@@ -70,9 +70,9 @@ function ajustarFigurarArrastrando(figura,tamanoPorDefecto,esFinal){
     if (esFinal && tamano < 1) {
   tamano = tamanoPorDefecto;
 }
-      if (figura.tipo === "Cuadrado") {
-    figura.x = Math.min(inicioX, finX);
-    figura.y = Math.min(inicioY, finY);
+       if (figura.tipo == "Cuadrado") {
+    figura.x = (inicioX + finX) / 2;
+    figura.y = (inicioY + finY) / 2;
     figura.grandaria = tamano;
   } else if (figura.tipo === "Circulo") {
     figura.x = (inicioX + finX) / 2;
@@ -163,7 +163,10 @@ window.addEventListener("mouseup", function() {
   const contorno = new Path2D();
 
   if (figura.tipo == "Cuadrado") {
-    contorno.rect(figura.x, figura.y, figura.grandaria, figura.grandaria);
+      contorno.rect(figura.x - figura.grandaria / 2,
+                  figura.y - figura.grandaria / 2,
+                  figura.grandaria, figura.grandaria);
+  
   } else if (figura.tipo == "Circulo") {
     contorno.arc(figura.x, figura.y, figura.radios, 0, 2 * Math.PI);
   } else if (figura.tipo == "Triangulo") {
@@ -175,8 +178,8 @@ window.addEventListener("mouseup", function() {
     const radio = figura.grandaria / 2;
     const radioInterior = radio / 2;
 
-    for (let i = 0; i < 10; i++) {
-      const angulo = (Math.PI / 5) * i - Math.PI / 2;
+    for (let i = 0; i < 14; i++) {
+      const angulo = (Math.PI / 7) * i - Math.PI / 2;
 
       let distancia;
       if (i % 2 == 0) {
@@ -299,6 +302,16 @@ if (botonBorrarFigura != null) {
     dibujar();
   });
 }
+const botonBorrarTodo = document.getElementById("boton-borrar-todo");
+
+if (botonBorrarTodo != null) {
+  botonBorrarTodo.addEventListener("click", function() {
+    figuras.length = 0;
+    figuraSeleccionada = null;
+    actualizarLista();
+    dibujar();
+  });
+}
 const botonEditarFigura = document.getElementById("boton-editar-figura");
 const formularioEditar = document.getElementById("form-editar");
 
@@ -400,7 +413,11 @@ function actualizarLista() {
 
   for (let i = 0; i < figuras.length; i++) {
     const item = document.createElement("li");
-    item.textContent = (i + 1) + ". " + figuras[i].tipo;
+      let nombre = figuras[i].nombre;
+    if (nombre === undefined) {
+      nombre = figuras[i].tipo;
+    }
+    item.textContent = (i + 1) + ". " + nombre;
 
     if (figuras[i] === figuraSeleccionada) {
       item.style.fontWeight = "bold";

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepo userRepo;
-    int contadorId=1;
+    int contadorId=2;
     @Override
 
     public User buscarUser(String username) {

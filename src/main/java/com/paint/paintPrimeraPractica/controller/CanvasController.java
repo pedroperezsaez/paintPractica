@@ -23,10 +23,6 @@ import java.util.List;
 public class CanvasController {
     @Autowired
     CanvasService canvasService;
-    @Autowired
-    UserService userService;
-    @Autowired
-    FigurasService figurasService;
     @GetMapping("/paint")
     public String mostrarPaint(Model model, HttpSession session){
         int idUser=(int) session.getAttribute("idUser");
