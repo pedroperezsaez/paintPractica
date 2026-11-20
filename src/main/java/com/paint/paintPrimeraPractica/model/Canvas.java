@@ -1,7 +1,5 @@
 package com.paint.paintPrimeraPractica.model;
 
-import java.util.List;
-import java.time.LocalDateTime;
 public class Canvas {
     private int id;
     private String nombre;
@@ -11,7 +9,7 @@ public class Canvas {
     private String fechaModificacion;
     private int numObjetos;
 
-    public Canvas(int id, String nombre, int idUser, String figurasJson, String fechaCreacion,String fechaModificacion) {
+    public Canvas(int id, String nombre, int idUser, String figurasJson, String fechaCreacion, String fechaModificacion) {
         this.id = id;
         this.nombre = nombre;
         this.idUser = idUser;

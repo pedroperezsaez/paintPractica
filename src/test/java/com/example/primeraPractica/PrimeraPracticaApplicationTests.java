@@ -3,11 +3,12 @@ package com.example.primeraPractica;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class <PrimeraPracticaApplicationTests {
+@SpringBootTest class
 
-	@Test
-	void contextLoads() {
-	}
+<PrimeraPracticaApplicationTests {
+
+    @Test
+    void contextLoads () {
+    }
 
 }

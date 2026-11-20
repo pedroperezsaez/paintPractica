@@ -9,18 +9,19 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Autowired
     UserRepo userRepo;
-    int contadorId=3;
+    int contadorId = 3;
+
     @Override
     public boolean checkRegister(String username, String password) {
 
-        if (username.isEmpty() || password.length()<5) {
+        if (username.isEmpty() || password.length() < 5) {
             return false;
         }
         if (userRepo.buscarUser(username) != null) {
             return false;
         }
 
-        userRepo.addUser(username, password,contadorId);
+        userRepo.addUser(username, password, contadorId);
         contadorId++;
 
         return true;

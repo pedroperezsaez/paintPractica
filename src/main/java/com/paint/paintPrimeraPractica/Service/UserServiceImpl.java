@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepo userRepo;
-    int contadorId=2;
+    int contadorId = 2;
+
     @Override
 
     public User buscarUser(String username) {
@@ -18,8 +19,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(String username, String password) {
-        if (!username.isEmpty()  && password.length()>5) {
-           User user=userRepo.addUser(username,password,contadorId);
+        if (!username.isEmpty() && password.length() > 5) {
+            User user = userRepo.addUser(username, password, contadorId);
             contadorId++;
 
             return user;

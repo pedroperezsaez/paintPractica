@@ -10,12 +10,12 @@ import java.util.List;
 @Component
 public class UserRepoImpl implements UserRepo {
     private final List<User> users = new ArrayList<>();
-    UserRepoImpl(){
-        users.add(new User("admin","admin", 1));
-        users.add(new User("pedro","pedro",2));
+
+    UserRepoImpl() {
+        users.add(new User("admin", "admin", 1));
+        users.add(new User("pedro", "pedro", 2));
 
     }
-
 
 
     @Override
@@ -24,7 +24,7 @@ public class UserRepoImpl implements UserRepo {
     }
 
     @Override
-    public User addUser(String username, String password,int id) {
+    public User addUser(String username, String password, int id) {
 
         User user = new User(username, password, id);
         users.add(user);

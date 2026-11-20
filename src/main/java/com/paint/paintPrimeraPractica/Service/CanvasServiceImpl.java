@@ -9,22 +9,22 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class CanvasServiceImpl implements CanvasService{
+public class CanvasServiceImpl implements CanvasService {
     @Autowired
     CanvasRepo canvasRepo;
-    int contador=4;
+    int contador = 4;
+
     @Override
     public Canvas buscarCanvas(int id) {
         return canvasRepo.buscarCanvas(id);
     }
 
 
-
     @Override
     public int agregarCanvas(String nombre, int idUser, String figurasJson) {
         int id = contador++;
         String fecha = LocalDateTime.now().toString();
-        fecha=fecha.substring(0, 16).replace("T"," ");
+        fecha = fecha.substring(0, 16).replace("T", " ");
         canvasRepo.agregarCanvas(id, nombre, idUser, figurasJson, fecha, fecha);
         return id;
     }
@@ -35,7 +35,6 @@ public class CanvasServiceImpl implements CanvasService{
     }
 
 
-
     @Override
     public void eliminarCanvas(int id) {
         canvasRepo.eliminarCanvas(id);
@@ -43,13 +42,14 @@ public class CanvasServiceImpl implements CanvasService{
 
     @Override
     public List<Canvas> buscarCanvasDelUsuario(int idUser) {
-        return canvasRepo.buscarTodosCanvas().stream().filter(i->i.getIdUser()==idUser).toList();
+        return canvasRepo.buscarTodosCanvas().stream().filter(i -> i.getIdUser() == idUser).toList();
     }
 
     @Override
     public void guardarFiguras(int id, String json) {
         canvasRepo.guardarFiguras(id, json);
     }
+
     @Override
     public String buscarFigurasJson(int id) {
         return canvasRepo.buscarFigurasJson(id);
@@ -74,7 +74,7 @@ public class CanvasServiceImpl implements CanvasService{
     @Override
     public void guardarFechaModificacion(int id) {
         String fecha = LocalDateTime.now().toString();
-        fecha=fecha.substring(0, 16).replace("T"," ");
+        fecha = fecha.substring(0, 16).replace("T", " ");
         canvasRepo.guardarFechaModificacion(id, fecha);
     }
 }

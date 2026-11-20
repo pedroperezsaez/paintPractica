@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-
 @Controller
 public class LoginController {
 
@@ -34,11 +32,11 @@ public class LoginController {
                             @RequestParam String password, Model model, HttpSession session) {
 
         if (loginService.checkLogin(username, password)) {
-            User user=userService.buscarUser(username);
+            User user = userService.buscarUser(username);
             session.setAttribute("username", username);
             session.setAttribute("idUser", user.getId());
 
-            int idCanvas = canvasService.agregarCanvas("Nuevo canvas",  user.getId(), "");
+            int idCanvas = canvasService.agregarCanvas("Nuevo canvas", user.getId(), "");
             return "redirect:/paint/" + idCanvas;
         }
 
