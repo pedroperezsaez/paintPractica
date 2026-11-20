@@ -16,7 +16,7 @@
     crossorigin="anonymous" />
 </head>
 
-<body>
+<body class="pagina-paint">
 
   <nav id="navegacion" class="d-flex justify-content-end align-items-center gap-2">
   <button type="button" id="boton-mis-canvas" class="boton-nav activa">
@@ -32,8 +32,9 @@
   </form>
 </nav>
 
-  <canvas id="canvas" width="800" height="800"></canvas>
-
+     <div id="contenedor-canvas">
+    <canvas id="canvas" width="800" height="800"></canvas>
+     </div>
   <div id="canvas-datos"
        th:if="${canvasSeleccionado != null}"
        th:attr="data-id=${canvasSeleccionado.id}, data-nombre=${canvasSeleccionado.nombre}"></div>
@@ -66,10 +67,16 @@
    <div id="form" class="d-flex flex-column gap-3"></div>
     <div id="form-editar" class="d-flex flex-column gap-3"></div>
 
-    <div th:if="${esEditor}" class="d-flex gap-2 mt-4">
+     <div th:if="${esEditor}" class="d-flex justify-content-center gap-2 mt-4">
       <button type="button" id="boton-editar-figura" class="boton-nav">Editar figura</button>
       <button type="button" id="boton-borrar-figura" class="boton-nav">Borrar figura</button>
+    </div>
+
+    <div th:if="${esEditor}" class="d-flex justify-content-center mt-2">
       <button type="button" id="boton-borrar-todo" class="boton-nav">Borrar todo</button>
+    </div>
+  </div>
+  </div>
     </div>
     </div>
 
@@ -101,19 +108,22 @@
   </div>
 
   <div id="lista-canvas" class="panel">
-    <h4>Canvas</h4>
+  
 
     <div id="lista-mis-canvas">
-      <h3 class="menu-header titulo-lista" >Mis canvas</h3>
-      <a class="menu-item lista-canvas d-block"
+      <h4 class=" titulo-lista" >Mis canvas</h4>
+        <a class="menu-item lista-canvas d-flex flex-column"
          th:each="canva : ${todosLosCanvasUsuario}"
-         th:text="${canva.nombre}"
          th:href="@{'/paint/' + ${canva.id}}"
-         th:attr="data-id=${canva.id}">Nombre canvas</a>
+         th:attr="data-id=${canva.id}">
+        <span class="nombre-canvas" th:text="${canva.nombre}">Nombre canvas</span>
+              <span class="fecha-canvas" th:text="'Creado: ' + ${canva.fechaCreacion}">Creado</span>
+        <span class="fecha-canvas" th:text="'Modificado: ' + ${canva.fechaModificacion}">Modificado</span>
+      </a>
     </div>
 
    <div id="lista-otros-canvas" th:style="'display:none'">
-  <div class="menu-header">Otros canvas</div>
+  <h4>Otros canvas</h4>
   <a class="menu-item lista-canvas d-block"
      th:each="canva : ${todosLosCanvas}"
      th:if="${canva.idUser != idUser}"

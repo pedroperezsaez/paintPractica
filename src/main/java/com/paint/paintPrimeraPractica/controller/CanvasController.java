@@ -1,8 +1,8 @@
 package com.paint.paintPrimeraPractica.controller;
 
-import com.paint.paintPrimeraPractica.Respository.UserRepo;
+
 import com.paint.paintPrimeraPractica.Service.CanvasService;
-import com.paint.paintPrimeraPractica.Service.FigurasService;
+
 import com.paint.paintPrimeraPractica.Service.UserService;
 import com.paint.paintPrimeraPractica.model.Canvas;
 import com.paint.paintPrimeraPractica.model.User;
@@ -62,8 +62,7 @@ public class CanvasController {
 
     @PostMapping("/paint/{id}/guardar")
     public String guardarCanvas(@PathVariable int id, @RequestParam String figuras,
-                                @RequestParam String nombre,
-                                @RequestParam int numObjetos, HttpSession session){
+                                @RequestParam String nombre, HttpSession session){
         int idUser=(int) session.getAttribute("idUser");
         if (canvasService.buscarCanvas(id) == null || canvasService.buscarIdUser(id) != idUser) {
             return "redirect:/paint";
@@ -76,7 +75,8 @@ public class CanvasController {
 
         canvasService.guardarNombre(id, nombre);
         canvasService.guardarFiguras(id, figuras);
-        canvasService.guardarHistorial(id, numObjetos);
+        canvasService.guardarFechaModificacion(id);
+
 
         return "redirect:/paint/"+id;
     }
@@ -84,7 +84,7 @@ public class CanvasController {
     @GetMapping("/paint/nuevo")
     public String nuevoCanvas(HttpSession session) {
         int idUser = (int) session.getAttribute("idUser");
-        int idCanvas = canvasService.agregarCanvas("Nuevo canvas", new ArrayList<>(), idUser, "");
+        int idCanvas = canvasService.agregarCanvas("Nuevo canvas",  idUser, "");
         return "redirect:/paint/" + idCanvas;
     }
 

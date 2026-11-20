@@ -1,7 +1,6 @@
 package com.paint.paintPrimeraPractica.Respository;
 
 import com.paint.paintPrimeraPractica.model.Canvas;
-import com.paint.paintPrimeraPractica.model.Figura;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -11,9 +10,9 @@ import java.util.List;
 public class CanvasRepoImpl implements CanvasRepo{
     private final List<Canvas> canvasList= new ArrayList<>();
     public CanvasRepoImpl(){
-        canvasList.add(new Canvas(1, "dibujo", new ArrayList<>(), 1,""));
-        canvasList.add(new Canvas(2, "Paisaje", new ArrayList<>(), 1,""));
-        canvasList.add(new Canvas(3, "Figuras", new ArrayList<>(), 2,""));
+        canvasList.add(new Canvas(1, "dibujo", 1, "", "2026-11-20 09:00", "2026-11-20 09:00"));
+        canvasList.add(new Canvas(2, "Paisaje", 1, "", "2026-11-20 10:00", "2026-11-20 10:00"));
+        canvasList.add(new Canvas(3, "Figuras", 2, "", "2026-11-20 11:00", "2026-11-20 11:00"));
     }
     @Override
     public Canvas buscarCanvas(int id) {
@@ -26,11 +25,10 @@ public class CanvasRepoImpl implements CanvasRepo{
     }
 
     @Override
-    public void agregarCanvas(int id, String nombre, List<Figura> figuras, int idUser,String figurasJson) {
-        Canvas canvas=new Canvas(id,nombre,figuras,idUser,figurasJson);
+    public void agregarCanvas(int id, String nombre, int idUser, String figurasJson,
+                              String fechaCreacion, String fechaModificacion) {
+        Canvas canvas = new Canvas(id, nombre, idUser, figurasJson, fechaCreacion, fechaModificacion);
         canvasList.add(canvas);
-
-
     }
 
     @Override
@@ -72,10 +70,10 @@ public class CanvasRepoImpl implements CanvasRepo{
         Canvas canvas = buscarCanvas(id);
         canvas.setNombre(nombre);
     }
+
     @Override
-    public void guardarHistorial(int id, int numObjetos) {
+    public void guardarFechaModificacion(int id, String fechaModificacion) {
         Canvas canvas = buscarCanvas(id);
-        canvas.setNumObjetos(numObjetos);
-        canvas.setFechaModificacion(LocalDateTime.now().toString());
+        canvas.setFechaModificacion(fechaModificacion);
     }
-    }
+}

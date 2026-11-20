@@ -2,10 +2,10 @@ package com.paint.paintPrimeraPractica.Service;
 
 import com.paint.paintPrimeraPractica.Respository.CanvasRepo;
 import com.paint.paintPrimeraPractica.model.Canvas;
-import com.paint.paintPrimeraPractica.model.Figura;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -18,10 +18,14 @@ public class CanvasServiceImpl implements CanvasService{
         return canvasRepo.buscarCanvas(id);
     }
 
+
+
     @Override
-    public int agregarCanvas(String nombre, List<Figura> figuras, int idUser,String figurasJson) {
+    public int agregarCanvas(String nombre, int idUser, String figurasJson) {
         int id = contador++;
-        canvasRepo.agregarCanvas(id, nombre, figuras, idUser,figurasJson);
+        String fecha = LocalDateTime.now().toString();
+        fecha=fecha.substring(0, 16).replace("T"," ");
+        canvasRepo.agregarCanvas(id, nombre, idUser, figurasJson, fecha, fecha);
         return id;
     }
 
@@ -65,8 +69,12 @@ public class CanvasServiceImpl implements CanvasService{
     public void guardarNombre(int id, String nombre) {
         canvasRepo.guardarNombre(id, nombre);
     }
+
+
     @Override
-    public void guardarHistorial(int id, int numObjetos) {
-        canvasRepo.guardarHistorial(id, numObjetos);
+    public void guardarFechaModificacion(int id) {
+        String fecha = LocalDateTime.now().toString();
+        fecha=fecha.substring(0, 16).replace("T"," ");
+        canvasRepo.guardarFechaModificacion(id, fecha);
     }
 }

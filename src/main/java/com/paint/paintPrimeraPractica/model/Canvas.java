@@ -5,21 +5,20 @@ import java.time.LocalDateTime;
 public class Canvas {
     private int id;
     private String nombre;
-    private List<Figura> figuras;
     private int idUser;
     private String figurasJson;
     private String fechaCreacion;
     private String fechaModificacion;
     private int numObjetos;
-    public Canvas(int id, String nombre, List<Figura> figuras, int idUser, String figurasJson){
-        this.id=id;
-        this.nombre=nombre;
-        this.figuras=figuras;
-        this.idUser=idUser;
-        this.figurasJson=figurasJson;
-        this.fechaCreacion=LocalDateTime.now().toString();
-        this.fechaModificacion=LocalDateTime.now().toString();
-        this.numObjetos=0;
+
+    public Canvas(int id, String nombre, int idUser, String figurasJson, String fechaCreacion,String fechaModificacion) {
+        this.id = id;
+        this.nombre = nombre;
+        this.idUser = idUser;
+        this.figurasJson = figurasJson;
+        this.fechaCreacion = fechaCreacion;
+        this.fechaModificacion = fechaModificacion;
+        this.numObjetos = 0;
     }
 
     public String getFechaCreacion() {
@@ -77,12 +76,7 @@ public class Canvas {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
-    public List<Figura> getFiguras() {
-        return figuras;
-    }
-
-    public void setFiguras(List<Figura> figuras) {
-        this.figuras = figuras;
-    }
 }
+
+
+

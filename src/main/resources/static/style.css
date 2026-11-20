@@ -34,25 +34,28 @@ body {
 
 #navegacion { grid-area: navegacion; }
 #figuras    { grid-area: figuras; }
-#canvas     { grid-area: canvas; }
+
 #derecha    { grid-area: derecha; }
 #historial  { grid-area: historial; }
+#contenedor-canvas { grid-area: canvas; 
+  display: grid;
+   width: 100%; }
 
 #derecha {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-#figuras,
-#canvas {
-  margin-top: 0;
-}
 
+#figuras { margin-top: 0; }
 #canvas {
+  width: 100%;
+  height: auto;
   border-radius: 20px;
   border: 2px solid var(--principal);
   background-color: var(--panel);
 }
+
 
 .panel {
   background-color: var(--panel);
@@ -135,4 +138,41 @@ select {
   border: 2px solid var(--principal);
   border-radius: 20px;
   padding: 6px 12px;
+}
+
+@media (max-width: 1400px) {
+  body.pagina-paint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #navegacion,
+  #figuras,
+  #contenedor-canvas,
+  #derecha,
+  #historial {
+    width: min(100%, 800px);
+  }
+  #navegacion {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+.lista-canvas {
+  border: 2px solid var(--principal);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  color: var(--texto);
+  text-decoration: none;
+  gap: 4px;
+}
+
+.nombre-canvas {
+  font-weight: 700;
+}
+
+.fecha-canvas {
+  color: var(--apagado);
+  font-size: 0.8rem;
 }

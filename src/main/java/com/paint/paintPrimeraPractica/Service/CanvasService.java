@@ -1,13 +1,12 @@
 package com.paint.paintPrimeraPractica.Service;
 
 import com.paint.paintPrimeraPractica.model.Canvas;
-import com.paint.paintPrimeraPractica.model.Figura;
 
 import java.util.List;
 
 public interface CanvasService {
     public Canvas buscarCanvas(int id);
-    public int agregarCanvas( String nombre, List<Figura> figuras, int idUser,String figurasJson);
+    public int agregarCanvas(String nombre, int idUser, String figurasJson);
     public List<Canvas> buscarTodosCanvas();
     public void eliminarCanvas(int id);
     public List<Canvas> buscarCanvasDelUsuario(int idUser);
@@ -16,6 +15,7 @@ public interface CanvasService {
     public String buscarNombre(int id);
     public int buscarIdUser(int id);
     public void guardarNombre(int id, String nombre);
-    public void guardarHistorial(int id, int numObjetos);
+
+    public void guardarFechaModificacion(int id);
 
 }
