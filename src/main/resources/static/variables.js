@@ -8,5 +8,19 @@ export const estado = {
   creando: false,
   figuraSeleccionada: null,
   tipoFigura: "",
-  figuraEnCreacion: null
+  figuraEnCreacion: null,
+  color: "red"
 };
+export const historial = {
+  deshechas: [],
+  rehechas: [],
+  entradas: []
+};
+
+
+const datosCanvas = document.getElementById("canvas-datos");
+export let idCanvas = "0";
+
+if (datosCanvas !== null) {
+  idCanvas = datosCanvas.getAttribute("data-id");
+}

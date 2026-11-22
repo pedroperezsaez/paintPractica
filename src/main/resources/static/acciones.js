@@ -1,68 +1,78 @@
-import { figuras, formulario, estado } from "./variables.js";
-import { dibujar, actualizarLista, cambiarTamano } from "./figuras.js";
+import { figuras, formulario, estado } from './variables.js';
+import { dibujar, actualizarLista, cambiarTamano } from './figuras.js';
+import { guardar, cargar } from "./local.js";
+import { registrarCambio, pintarHistorial } from "./historial.js";
 
-const datosFiguras = document.getElementById("datosFiguras");
-const textoFiguras = datosFiguras.textContent.trim();
+const datosFiguras = document.getElementById('datosFiguras');
 
-if (textoFiguras !== "") {
-  const figurasGuardadas = JSON.parse(textoFiguras);
+if (cargar() === false) {
+  const textoFiguras = datosFiguras.textContent.trim();
 
-  for (const figura of figurasGuardadas) {
-    figuras.push(figura);
+  if (textoFiguras !== '') {
+    const figurasGuardadas = JSON.parse(textoFiguras);
+
+    for (const figura of figurasGuardadas) {
+      figuras.push(figura);
+    }
   }
 }
 
 actualizarLista();
 dibujar();
+pintarHistorial();
 
-const botonBorrarFigura = document.getElementById("boton-borrar-figura");
+const botonBorrarFigura = document.getElementById('boton-borrar-figura');
 
 if (botonBorrarFigura != null) {
-  botonBorrarFigura.addEventListener("click", function() {
+  botonBorrarFigura.addEventListener('click', function () {
     if (estado.figuraSeleccionada == null) {
       return;
     }
-
+    registrarCambio("Borrar " + estado.figuraSeleccionada.nombre);
     const posicion = figuras.indexOf(estado.figuraSeleccionada);
     figuras.splice(posicion, 1);
 
     estado.figuraSeleccionada = null;
     actualizarLista();
+    guardar()
     dibujar();
   });
 }
 
-const botonBorrarTodo = document.getElementById("boton-borrar-todo");
+const botonBorrarTodo = document.getElementById('boton-borrar-todo');
 
 if (botonBorrarTodo != null) {
-  botonBorrarTodo.addEventListener("click", function() {
+  botonBorrarTodo.addEventListener('click', function () {
+    registrarCambio("Borrar todo");
     figuras.length = 0;
     estado.figuraSeleccionada = null;
     actualizarLista();
+    guardar();
     dibujar();
   });
 }
 
-const botonEditarFigura = document.getElementById("boton-editar-figura");
-const formularioEditar = document.getElementById("form-editar");
+const botonEditarFigura = document.getElementById('boton-editar-figura');
+const formularioEditar = document.getElementById('form-editar');
 
 if (botonEditarFigura != null) {
-  botonEditarFigura.addEventListener("click", function() {
+  botonEditarFigura.addEventListener('click', function () {
     if (estado.figuraSeleccionada == null) {
       return;
     }
 
     estado.creando = false;
-    formulario.innerHTML = "";
+    formulario.innerHTML = '';
 
     let tamanoActual = 100;
-    if (estado.figuraSeleccionada.tipo == "Cuadrado") {
+    if (estado.figuraSeleccionada.tipo == 'Cuadrado') {
       tamanoActual = estado.figuraSeleccionada.grandaria;
-    } else if (estado.figuraSeleccionada.tipo == "Circulo") {
+    } else if (estado.figuraSeleccionada.tipo == 'Circulo') {
       tamanoActual = estado.figuraSeleccionada.radios * 2;
-    } else if (estado.figuraSeleccionada.tipo == "Triangulo") {
-      tamanoActual = estado.figuraSeleccionada.y2 - estado.figuraSeleccionada.y1;
-    } else if (estado.figuraSeleccionada.tipo == "Estrella") {
+    } else if (estado.figuraSeleccionada.tipo == 'Triangulo') {
+      tamanoActual =
+        estado.figuraSeleccionada.y2 - estado.figuraSeleccionada.y1;
+    } else if (estado.figuraSeleccionada.tipo == 'Estrella') {
       tamanoActual = estado.figuraSeleccionada.grandaria;
     }
 
@@ -93,63 +103,73 @@ if (botonEditarFigura != null) {
       </button>
     `;
 
-    document.getElementById("relleno-editar").checked = estado.figuraSeleccionada.tieneRelleno;
-    document.getElementById("color-editar").value = estado.figuraSeleccionada.color;
+    document.getElementById('relleno-editar').checked =
+      estado.figuraSeleccionada.tieneRelleno;
+    document.getElementById('color-editar').value =
+      estado.figuraSeleccionada.color;
 
-    document.getElementById("boton-aplicar").addEventListener("click", function() {
-      const tamano = Number(document.getElementById("tamano-editar").value) || 100;
-      const conRelleno = document.getElementById("relleno-editar").checked;
+    document
+      .getElementById('boton-aplicar')
+      .addEventListener('click', function () {
+        const tamano =
+          Number(document.getElementById('tamano-editar').value) || 100;
+                  registrarCambio("Editar " + estado.figuraSeleccionada.nombre);
+        const conRelleno = document.getElementById('relleno-editar').checked;
 
-      cambiarTamano(estado.figuraSeleccionada, tamano);
-      estado.figuraSeleccionada.tieneRelleno = conRelleno;
-      estado.figuraSeleccionada.color = document.getElementById("color-editar").value;
-      formularioEditar.innerHTML = "";
-      dibujar();
-    });
+        cambiarTamano(estado.figuraSeleccionada, tamano);
+        estado.figuraSeleccionada.tieneRelleno = conRelleno;
+        estado.figuraSeleccionada.color =
+          document.getElementById('color-editar').value;
+          guardar()
+        formularioEditar.innerHTML = '';
+        dibujar();
+      });
   });
 }
 
-const botonGuardar = document.getElementById("form-guardar");
+const botonGuardar = document.getElementById('form-guardar');
 
 if (botonGuardar !== null) {
-  botonGuardar.addEventListener("submit", function() {
-    const datosCanvas = document.getElementById("canvas-datos");
-    const canvasId = datosCanvas.getAttribute("data-id");
+  botonGuardar.addEventListener('submit', function () {
+    const datosCanvas = document.getElementById('canvas-datos');
+    const canvasId = datosCanvas.getAttribute('data-id');
 
     for (const figura of figuras) {
       figura.canvasId = Number(canvasId);
     }
 
-    document.getElementById("figurasGuardar").value = JSON.stringify(figuras);
-    document.getElementById("numObjetos").value = figuras.length;
+    document.getElementById('figurasGuardar').value = JSON.stringify(figuras);
+    document.getElementById('numObjetos').value = figuras.length;
   });
 }
 
-const botonMisCanvas = document.getElementById("boton-mis-canvas");
-const botonOtrosCanvas = document.getElementById("boton-otros-canvas");
+const botonMisCanvas = document.getElementById('boton-mis-canvas');
+const botonOtrosCanvas = document.getElementById('boton-otros-canvas');
 
 if (botonMisCanvas !== null && botonOtrosCanvas !== null) {
-  botonMisCanvas.addEventListener("click", function() {
-    document.getElementById("lista-mis-canvas").style.display = "block";
-    document.getElementById("lista-otros-canvas").style.display = "none";
-    botonMisCanvas.classList.add("activa");
-    botonOtrosCanvas.classList.remove("activa");
+  botonMisCanvas.addEventListener('click', function () {
+    document.getElementById('lista-mis-canvas').style.display = 'block';
+    document.getElementById('lista-otros-canvas').style.display = 'none';
+    botonMisCanvas.classList.add('activa');
+    botonOtrosCanvas.classList.remove('activa');
   });
 
-  botonOtrosCanvas.addEventListener("click", function() {
-    document.getElementById("lista-otros-canvas").style.display = "block";
-    document.getElementById("lista-mis-canvas").style.display = "none";
-    botonOtrosCanvas.classList.add("activa");
-    botonMisCanvas.classList.remove("activa");
+  botonOtrosCanvas.addEventListener('click', function () {
+    document.getElementById('lista-otros-canvas').style.display = 'block';
+    document.getElementById('lista-mis-canvas').style.display = 'none';
+    botonOtrosCanvas.classList.add('activa');
+    botonMisCanvas.classList.remove('activa');
   });
 }
 
-const enlacesCanvas = document.querySelectorAll("#lista-mis-canvas span.nombre-canvas");
+const enlacesCanvas = document.querySelectorAll(
+  '#lista-mis-canvas span.nombre-canvas',
+);
 let contador = 1;
 
 for (const nombre of enlacesCanvas) {
-  if (nombre.textContent.trim() === "Nuevo canvas") {
-    nombre.textContent = "Canvas " + contador;
+  if (nombre.textContent.trim() === 'Nuevo canvas') {
+    nombre.textContent = 'Canvas ' + contador;
     contador++;
   }
 }
