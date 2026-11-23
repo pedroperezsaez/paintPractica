@@ -81,6 +81,7 @@ public class CanvasController {
         return "redirect:/paint/" + id;
     }
 
+
     @GetMapping("/paint/nuevo")
     public String nuevoCanvas(HttpSession session) {
         int idUser = (int) session.getAttribute("idUser");

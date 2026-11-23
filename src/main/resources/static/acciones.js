@@ -154,13 +154,14 @@ if (botonMisCanvas !== null && botonOtrosCanvas !== null) {
     botonOtrosCanvas.classList.remove('activa');
   });
 
-  botonOtrosCanvas.addEventListener('click', function () {
-    document.getElementById('lista-otros-canvas').style.display = 'block';
-    document.getElementById('lista-mis-canvas').style.display = 'none';
-    botonOtrosCanvas.classList.add('activa');
-    botonMisCanvas.classList.remove('activa');
-  });
-}
+    botonOtrosCanvas.addEventListener('click', function () {
+      document.getElementById('lista-otros-canvas').style.display = 'block';
+      document.getElementById('lista-mis-canvas').style.display = 'none';
+      botonOtrosCanvas.classList.add('activa');
+      botonMisCanvas.classList.remove('activa');
+    });
+  }
+
 
 const enlacesCanvas = document.querySelectorAll(
   '#lista-mis-canvas span.nombre-canvas',

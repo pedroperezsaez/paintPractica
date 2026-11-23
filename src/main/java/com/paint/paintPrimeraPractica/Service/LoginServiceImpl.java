@@ -16,9 +16,6 @@ public class LoginServiceImpl implements LoginService {
         User user = userRepo.buscarUser(username);
         if (user == null) return false;
         return (password.equals(user.getPassword()));
-
-
-        // return true;
     }
 
 

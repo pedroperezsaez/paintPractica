@@ -13,6 +13,7 @@ public class CanvasServiceImpl implements CanvasService {
     @Autowired
     CanvasRepo canvasRepo;
     int contador = 4;
+    int contadorNombre=1;
 
     @Override
     public Canvas buscarCanvas(int id) {
@@ -23,6 +24,12 @@ public class CanvasServiceImpl implements CanvasService {
     @Override
     public int agregarCanvas(String nombre, int idUser, String figurasJson) {
         int id = contador++;
+
+        if (nombre.equals("Nuevo canvas")) {
+            nombre = "Nuevo canvas " + contadorNombre;
+            contadorNombre++;
+        }
+
         String fecha = LocalDateTime.now().toString();
         fecha = fecha.substring(0, 16).replace("T", " ");
         canvasRepo.agregarCanvas(id, nombre, idUser, figurasJson, fecha, fecha);
@@ -76,5 +83,10 @@ public class CanvasServiceImpl implements CanvasService {
         String fecha = LocalDateTime.now().toString();
         fecha = fecha.substring(0, 16).replace("T", " ");
         canvasRepo.guardarFechaModificacion(id, fecha);
+    }
+    public String nombreNuevoCanvas() {
+        String nombre = "Nuevo canvas " + contadorNombre;
+        contadorNombre++;
+        return nombre;
     }
 }

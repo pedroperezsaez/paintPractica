@@ -26,5 +26,5 @@ public interface CanvasService {
     void guardarNombre(int id, String nombre);
 
     void guardarFechaModificacion(int id);
-
+    String nombreNuevoCanvas();
 }
