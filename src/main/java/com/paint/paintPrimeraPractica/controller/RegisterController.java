@@ -24,7 +24,7 @@ public class RegisterController {
         if (registerService.checkRegister(username, password)) {
             return "redirect:/";
         }
-        model.addAttribute("message", "Usuario existe o datos incorrectos");
+        model.addAttribute("message", "Usuario  existe o datos incorrectos");
         return "register";
     }
 }

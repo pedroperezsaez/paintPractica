@@ -27,7 +27,8 @@ public class LoginController {
         return "login";
     }
 
-    @PostMapping("/login")
+
+      @PostMapping("/login")
     public String loginPost(@RequestParam String username,
                             @RequestParam String password, Model model, HttpSession session) {
 
@@ -44,22 +45,8 @@ public class LoginController {
         return "login";
     }
 
-   /* @GetMapping("/paint")
-    public String privada(HttpSession session, Model model) {
-        String username = (String) session.getAttribute("username");
-        int idUser=(int) session.getAttribute("idUser");
 
-        if (username == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("todosLosCanvasUsuario", canvasService.buscarCanvasDelUsuario(idUser));
-        model.addAttribute("todosLosCanvas", canvasService.buscarTodosCanvas());
-        model.addAttribute("idUser", idUser);
 
-        return "paint";
-    }
-
-    */
 
     @PostMapping("/logout")
     public String logout(HttpSession session) {

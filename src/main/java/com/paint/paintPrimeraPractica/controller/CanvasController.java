@@ -28,6 +28,9 @@ public class CanvasController {
         return "paint";
     }
 
+
+
+
     @GetMapping("/paint/{id}")
     public String enviarCanvas(Model model, @PathVariable int id, HttpSession session) {
         int idUser = (int) session.getAttribute("idUser");
@@ -42,6 +45,9 @@ public class CanvasController {
         model.addAttribute("figurasJson", canvasService.buscarFigurasJson(id));
         return "paint";
     }
+
+
+
 
     @PostMapping("/paint/eliminarCanvas/{id}")
     public String eliminarCanvas(@PathVariable int id, HttpSession session) {

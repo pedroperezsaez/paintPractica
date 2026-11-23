@@ -20,10 +20,8 @@ public class RegisterServiceImpl implements RegisterService {
         if (userRepo.buscarUser(username) != null) {
             return false;
         }
-
         userRepo.addUser(username, password, contadorId);
         contadorId++;
-
         return true;
     }
 }
