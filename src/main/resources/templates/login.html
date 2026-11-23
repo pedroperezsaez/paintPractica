@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Login</title>
+
+    <link rel="stylesheet" th:href="@{/style.css}"/>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css"
+            rel="stylesheet"/>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css"
+            rel="stylesheet"/>
+</head>
+<body class="pagina-acceso">
+
+<nav class="d-flex justify-content-end gap-2" id="navegacion">
+    <a class="boton-nav activa" th:href="@{/}">
+        <i class="bi bi-box-arrow-in-right"></i> Login
+    </a>
+    <a class="boton-nav" th:href="@{/register}">
+        <i class="bi bi-person-plus"></i> Register
+    </a>
+</nav>
+
+<main>
+    <div class="panel">
+        <div class="boton-nav activa mb-3">
+            <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+        </div>
+
+        <p class="mensaje-error" th:if="${message}" th:text="${message}"></p>
+
+        <form method="post" th:action="@{/login}">
+            <div class="mb-3">
+                <label class="form-label" for="username">Usuario</label>
+                <input class="form-control" id="username" name="username" type="text"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="password">Contraseña</label>
+                <input class="form-control" id="password" name="password" type="password"/>
+            </div>
+            <button class="boton-nav activa" type="submit">Entrar</button>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

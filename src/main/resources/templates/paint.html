@@ -1,0 +1,275 @@
+<!doctype html>
+<html
+  lang="es"
+  xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0"
+      name="viewport" />
+    <title>Paint</title>
+
+    <link
+      rel="stylesheet"
+      th:href="@{/style.css}" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css"
+      rel="stylesheet" />
+    <link
+      crossorigin="anonymous"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css"
+      integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe"
+      rel="stylesheet" />
+  </head>
+
+  <body class="pagina-paint">
+    <nav
+      class="d-flex justify-content-end align-items-center gap-2"
+      id="navegacion">
+      <button
+        class="boton-nav activa"
+        id="boton-mis-canvas"
+        type="button">
+        <i class="bi bi-collection"></i> Mis canvas
+      </button>
+      <button
+        class="boton-nav"
+        id="boton-otros-canvas"
+        type="button">
+        <i class="bi bi-globe"></i> Otros canvas
+      </button>
+      <form
+        method="post"
+        th:action="@{/logout}">
+        <button
+          class="boton-nav activa"
+          type="submit">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </form>
+    </nav>
+
+    <div id="contenedor-canvas">
+      <canvas
+        height="800"
+        id="canvas"
+        width="800"></canvas>
+    </div>
+    <div
+      id="canvas-datos"
+      th:attr="data-id=${canvasSeleccionado.id}, data-nombre=${canvasSeleccionado.nombre}"
+      th:if="${canvasSeleccionado != null}"></div>
+
+    <div
+      class="panel"
+      id="figuras">
+      <h4>Figuras</h4>
+
+      <div
+        class="d-flex flex-wrap gap-2 mb-3"
+        th:if="${esEditor}">
+        <button
+          aria-label="Cuadrado"
+          class="boton-nav"
+          data-tipo="Cuadrado"
+          id="boton-cuadrado"
+          type="button">
+          <i class="bi bi-square-fill"></i>
+        </button>
+        <button
+          aria-label="Triangulo"
+          class="boton-nav"
+          data-tipo="Triangulo"
+          id="boton-triangulo"
+          type="button">
+          <i class="bi bi-triangle-fill"></i>
+        </button>
+        <button
+          aria-label="Circulo"
+          class="boton-nav"
+          data-tipo="Circulo"
+          id="boton-circulo"
+          type="button">
+          <i class="bi bi-circle-fill"></i>
+        </button>
+        <button
+          aria-label="Estrella"
+          class="boton-nav"
+          data-tipo="Estrella"
+          id="boton-estrella"
+          type="button">
+          <i class="bi bi-star-fill"></i>
+        </button>
+        <button
+          aria-label="Trazado"
+          class="boton-nav"
+          data-tipo="Trazado"
+          id="boton-trazado"
+          type="button">
+          <i class="bi bi-pencil-fill"></i>
+        </button>
+      </div>
+
+      <h4 id="titulo-figura"></h4>
+
+      <ul id="lista-figuras"></ul>
+
+      <div
+        class="d-flex flex-column gap-3"
+        id="form"></div>
+      <div
+        class="d-flex flex-column gap-3"
+        id="form-editar"></div>
+
+      <div
+        class="d-flex justify-content-center gap-2 mt-4"
+        th:if="${esEditor}">
+        <button
+          class="boton-nav"
+          id="boton-editar-figura"
+          type="button">
+          Editar figura
+        </button>
+        <button
+          class="boton-nav"
+          id="boton-borrar-figura"
+          type="button">
+          Borrar figura
+        </button>
+      </div>
+
+      <div
+        class="d-flex justify-content-center mt-2"
+        th:if="${esEditor}">
+        <button
+          class="boton-nav"
+          id="boton-borrar-todo"
+          type="button">
+          Borrar todo
+        </button>
+      </div>
+    </div>
+
+    <div id="derecha">
+      <div
+        class="panel"
+        id="panel-canvas">
+        <h4>Canvas</h4>
+
+        <a
+          class="boton-nav mb-2"
+          th:href="@{/paint/nuevo}"
+          >Nuevo canvas</a
+        >
+
+        <form
+          id="form-guardar"
+          method="post"
+          th:action="@{'/paint/' + ${canvasSeleccionado.id} + '/guardar'}"
+          th:if="${esEditor}">
+          <label
+            class="form-label"
+            for="nombre"
+            >Nombre</label
+          >
+          <input
+            class="form-control mb-2"
+            id="nombre"
+            name="nombre"
+            th:value="${canvasSeleccionado.nombre}"
+            type="text" />
+          <input
+            id="figurasGuardar"
+            name="figuras"
+            type="hidden" />
+          <input
+            id="numObjetos"
+            name="numObjetos"
+            type="hidden" />
+          <button
+            class="boton-nav activa"
+            type="submit">
+            Guardar canvas
+          </button>
+        </form>
+
+        <div
+          class="mt-2 d-flex gap-2"
+          th:if="${esEditor}">
+         
+          <form
+            method="post"
+            th:action="@{'/paint/eliminarCanvas/'+ ${canvasSeleccionado.id}}">
+            <button
+              class="boton-nav"
+              id="eliminar-canvas"
+              type="submit">
+              Eliminar
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div
+        class="panel"
+        id="lista-canvas">
+        <div id="lista-mis-canvas">
+          <h4 class="titulo-lista">Mis canvas</h4>
+          <a
+            class="menu-item lista-canvas d-flex flex-column"
+            th:attr="data-id=${canva.id}"
+            th:each="canva : ${todosLosCanvasUsuario}"
+            th:href="@{'/paint/' + ${canva.id}}">
+            <span
+              class="nombre-canvas"
+              th:text="${canva.nombre}"
+              >Nombre canvas</span
+            >
+            <span
+              class="fecha-canvas"
+              th:text="'Creado: ' + ${canva.fechaCreacion}"
+              >Creado</span
+            >
+            <span
+              class="fecha-canvas"
+              th:text="'Modificado: ' + ${canva.fechaModificacion}"
+              >Modificado</span
+            >
+          </a>
+        </div>
+
+        <div
+          id="lista-otros-canvas"
+          th:style="'display:none'">
+          <h4>Otros canvas</h4>
+          <a
+            class="menu-item lista-canvas d-block"
+            th:attr="data-id=${canva.id}"
+            th:each="canva : ${todosLosCanvas}"
+            th:href="@{'/paint/' + ${canva.id}}"
+            th:if="${canva.idUser != idUser}"
+            th:text="${canva.nombre}"
+            >Nombre canvas</a
+          >
+        </div>
+      </div>
+    </div>
+    <div
+      class="panel"
+      id="historial"></div>
+    <script
+      id="datosFiguras"
+      th:utext="${figurasJson}"
+      type="application/json">
+      []
+    </script>
+    <script
+      th:src="@{/script.js}"
+      type="module"></script>
+    <script
+      crossorigin="anonymous"
+      integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL"
+      src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js"
+      type="module"></script>
+  </body>
+</html>
