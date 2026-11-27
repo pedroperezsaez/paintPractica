@@ -1,11 +1,16 @@
-import { figuras, formulario, estado } from './variables.js';
+import { figuras, formulario, estado, idCanvas } from './variables.js';
 import { dibujar, actualizarLista, cambiarTamano } from './figuras.js';
-import { guardar, cargar } from "./local.js";
-import { registrarCambio, pintarHistorial } from "./historial.js";
+import { guardar, cargar } from './local.js';
+import {
+  historialBorrar,
+  historialBorrarTodo,
+  historialCambiar,
+  pintarHistorial,
+} from './historial.js';
 
 const datosFiguras = document.getElementById('datosFiguras');
 
-if (cargar() === false) {
+if (cargar() == false) {
   const textoFiguras = datosFiguras.textContent.trim();
 
   if (textoFiguras !== '') {
@@ -20,7 +25,13 @@ if (cargar() === false) {
 actualizarLista();
 dibujar();
 pintarHistorial();
+const formEliminar = document.getElementById('form-eliminar');
 
+if (formEliminar !== null) {
+  formEliminar.addEventListener('submit', function () {
+    localStorage.removeItem('paint-' + idCanvas);
+  });
+}
 const botonBorrarFigura = document.getElementById('boton-borrar-figura');
 
 if (botonBorrarFigura != null) {
@@ -28,13 +39,17 @@ if (botonBorrarFigura != null) {
     if (estado.figuraSeleccionada == null) {
       return;
     }
-    registrarCambio("Borrar " + estado.figuraSeleccionada.nombre);
     const posicion = figuras.indexOf(estado.figuraSeleccionada);
+    historialBorrar(
+      posicion,
+      estado.figuraSeleccionada,
+      'Borrar ' + estado.figuraSeleccionada.nombre,
+    );
     figuras.splice(posicion, 1);
 
     estado.figuraSeleccionada = null;
     actualizarLista();
-    guardar()
+    guardar();
     dibujar();
   });
 }
@@ -43,7 +58,7 @@ const botonBorrarTodo = document.getElementById('boton-borrar-todo');
 
 if (botonBorrarTodo != null) {
   botonBorrarTodo.addEventListener('click', function () {
-    registrarCambio("Borrar todo");
+    historialBorrarTodo(figuras, 'Borrar todo');
     figuras.length = 0;
     estado.figuraSeleccionada = null;
     actualizarLista();
@@ -83,6 +98,18 @@ if (botonEditarFigura != null) {
                id="tamano-editar" value="${tamanoActual}">
       </div>
 
+      <div class="mb-3">
+        <label for="x-editar" class="form-label">X</label>
+        <input type="number" class="form-control"
+               id="x-editar" value="${estado.figuraSeleccionada.x}">
+      </div>
+
+      <div class="mb-3">
+        <label for="y-editar" class="form-label">Y</label>
+        <input type="number" class="form-control"
+               id="y-editar" value="${estado.figuraSeleccionada.y}">
+      </div>
+
       <div class="form-check mb-3">
         <input class="form-check-input" type="checkbox" id="relleno-editar">
         <label class="form-check-label" for="relleno-editar">Con relleno</label>
@@ -108,22 +135,42 @@ if (botonEditarFigura != null) {
     document.getElementById('color-editar').value =
       estado.figuraSeleccionada.color;
 
-    document
-      .getElementById('boton-aplicar')
-      .addEventListener('click', function () {
-        const tamano =
-          Number(document.getElementById('tamano-editar').value) || 100;
-                  registrarCambio("Editar " + estado.figuraSeleccionada.nombre);
-        const conRelleno = document.getElementById('relleno-editar').checked;
+    const botonAplicar = document.getElementById('boton-aplicar');
+    botonAplicar.addEventListener('click', function () {
+      const tamano =
+        Number(document.getElementById('tamano-editar').value) || 100;
+      const x = Number(document.getElementById('x-editar').value);
+      const y = Number(document.getElementById('y-editar').value);
+      const conRelleno = document.getElementById('relleno-editar').checked;
+      const color = document.getElementById('color-editar').value;
 
-        cambiarTamano(estado.figuraSeleccionada, tamano);
-        estado.figuraSeleccionada.tieneRelleno = conRelleno;
-        estado.figuraSeleccionada.color =
-          document.getElementById('color-editar').value;
-          guardar()
-        formularioEditar.innerHTML = '';
-        dibujar();
-      });
+      const posicionFigura = figuras.indexOf(estado.figuraSeleccionada);
+      historialCambiar(
+        posicionFigura,
+        estado.figuraSeleccionada,
+        'Editar ' + estado.figuraSeleccionada.nombre,
+      );
+
+      const movimientoX = x - estado.figuraSeleccionada.x;
+      const movimientoY = y - estado.figuraSeleccionada.y;
+
+      estado.figuraSeleccionada.x = x;
+      estado.figuraSeleccionada.y = y;
+
+      if (estado.figuraSeleccionada.tipo == 'Trazado') {
+        for (const punto of estado.figuraSeleccionada.posicionPuntos) {
+          punto.x = punto.x + movimientoX;
+          punto.y = punto.y + movimientoY;
+        }
+      }
+
+      cambiarTamano(estado.figuraSeleccionada, tamano);
+      estado.figuraSeleccionada.tieneRelleno = conRelleno;
+      estado.figuraSeleccionada.color = color;
+      guardar();
+      formularioEditar.innerHTML = '';
+      dibujar();
+    });
   });
 }
 
@@ -154,14 +201,13 @@ if (botonMisCanvas !== null && botonOtrosCanvas !== null) {
     botonOtrosCanvas.classList.remove('activa');
   });
 
-    botonOtrosCanvas.addEventListener('click', function () {
-      document.getElementById('lista-otros-canvas').style.display = 'block';
-      document.getElementById('lista-mis-canvas').style.display = 'none';
-      botonOtrosCanvas.classList.add('activa');
-      botonMisCanvas.classList.remove('activa');
-    });
-  }
-
+  botonOtrosCanvas.addEventListener('click', function () {
+    document.getElementById('lista-otros-canvas').style.display = 'block';
+    document.getElementById('lista-mis-canvas').style.display = 'none';
+    botonOtrosCanvas.classList.add('activa');
+    botonMisCanvas.classList.remove('activa');
+  });
+}
 
 const enlacesCanvas = document.querySelectorAll(
   '#lista-mis-canvas span.nombre-canvas',

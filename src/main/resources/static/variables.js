@@ -9,14 +9,16 @@ export const estado = {
   figuraSeleccionada: null,
   tipoFigura: "",
   figuraEnCreacion: null,
+  figuraMoviendose: null,
+  ultimoPunto: null,
+  yaRegistrado: false,
   color: "red"
 };
 export const historial = {
-  deshechas: [],
-  rehechas: [],
+  deshacer: [],
+  rehacer: [],
   entradas: []
 };
-
 
 const datosCanvas = document.getElementById("canvas-datos");
 export let idCanvas = "0";

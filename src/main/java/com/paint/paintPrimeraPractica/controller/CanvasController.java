@@ -29,8 +29,6 @@ public class CanvasController {
     }
 
 
-
-
     @GetMapping("/paint/{id}")
     public String enviarCanvas(Model model, @PathVariable int id, HttpSession session) {
         int idUser = (int) session.getAttribute("idUser");
@@ -45,8 +43,6 @@ public class CanvasController {
         model.addAttribute("figurasJson", canvasService.buscarFigurasJson(id));
         return "paint";
     }
-
-
 
 
     @PostMapping("/paint/eliminarCanvas/{id}")
@@ -67,10 +63,9 @@ public class CanvasController {
         if (canvasService.buscarCanvas(id) == null || canvasService.buscarIdUser(id) != idUser) {
             return "redirect:/paint";
         }
-
         nombre = nombre.trim();
         if (nombre.isEmpty()) {
-            nombre = "Dibuix " + id;
+            nombre = "Nuevo Canvas " + id;
         }
 
         canvasService.guardarNombre(id, nombre);
@@ -79,6 +74,24 @@ public class CanvasController {
 
 
         return "redirect:/paint/" + id;
+    }
+    @GetMapping("/paint/mis-canvas")
+    public String misCanvas(Model model, HttpSession session) {
+        int idUser = (int) session.getAttribute("idUser");
+
+        model.addAttribute("todosLosCanvasUsuario",
+                canvasService.buscarCanvasDelUsuario(idUser));
+
+        return "mis-canvas";
+    }
+
+    @GetMapping("/paint/otros-canvas")
+    public String otrosCanvas(Model model) {
+
+        model.addAttribute("todosLosCanvas",
+                canvasService.buscarTodosCanvas());
+
+        return "otros-canvas";
     }
 
 

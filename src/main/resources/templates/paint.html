@@ -26,18 +26,24 @@
     <nav
       class="d-flex justify-content-end align-items-center gap-2"
       id="navegacion">
-      <button
+      <a
         class="boton-nav activa"
+        id="boton-canvas"
+        th:href="@{/paint}">
+        <i class="bi bi-palette-fill"></i> Canvas
+      </a>
+      <a
+        class="boton-nav"
         id="boton-mis-canvas"
-        type="button">
+        th:href="@{/paint/mis-canvas}">
         <i class="bi bi-collection"></i> Mis canvas
-      </button>
-      <button
+      </a>
+      <a
         class="boton-nav"
         id="boton-otros-canvas"
-        type="button">
+        th:href="@{/paint/otros-canvas}">
         <i class="bi bi-globe"></i> Otros canvas
-      </button>
+      </a>
       <form
         method="post"
         th:action="@{/logout}">
@@ -196,8 +202,8 @@
         <div
           class="mt-2 d-flex gap-2"
           th:if="${esEditor}">
-         
           <form
+            id="form-eliminar"
             method="post"
             th:action="@{'/paint/eliminarCanvas/'+ ${canvasSeleccionado.id}}">
             <button
@@ -207,50 +213,6 @@
               Eliminar
             </button>
           </form>
-        </div>
-      </div>
-
-      <div
-        class="panel"
-        id="lista-canvas">
-        <div id="lista-mis-canvas">
-          <h4 class="titulo-lista">Mis canvas</h4>
-          <a
-            class="menu-item lista-canvas d-flex flex-column"
-            th:attr="data-id=${canva.id}"
-            th:each="canva : ${todosLosCanvasUsuario}"
-            th:href="@{'/paint/' + ${canva.id}}">
-            <span
-              class="nombre-canvas"
-              th:text="${canva.nombre}"
-              >Nombre canvas</span
-            >
-            <span
-              class="fecha-canvas"
-              th:text="'Creado: ' + ${canva.fechaCreacion}"
-              >Creado</span
-            >
-            <span
-              class="fecha-canvas"
-              th:text="'Modificado: ' + ${canva.fechaModificacion}"
-              >Modificado</span
-            >
-          </a>
-        </div>
-
-        <div
-          id="lista-otros-canvas"
-          th:style="'display:none'">
-          <h4>Otros canvas</h4>
-          <a
-            class="menu-item lista-canvas d-block"
-            th:attr="data-id=${canva.id}"
-            th:each="canva : ${todosLosCanvas}"
-            th:href="@{'/paint/' + ${canva.id}}"
-            th:if="${canva.idUser != idUser}"
-            th:text="${canva.nombre}"
-            >Nombre canvas</a
-          >
         </div>
       </div>
     </div>

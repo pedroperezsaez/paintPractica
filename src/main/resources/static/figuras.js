@@ -117,14 +117,20 @@ export function actualizarLista() {
   lista.innerHTML = '';
 
   for (let i = 0; i < figuras.length; i++) {
-    const item = document.createElement('li');
-   
-     item.textContent = i + 1 + '. ' + figuras[i].nombre;
+    const elemento = document.createElement('li');
 
-    if (figuras[i] === estado.figuraSeleccionada) {
-      item.style.fontWeight = 'bold';
+    elemento.textContent = i + 1 + '. ' + figuras[i].nombre;
+
+    if (figuras[i] == estado.figuraSeleccionada) {
+      elemento.style.fontWeight = 'bold';
     }
 
-    lista.appendChild(item);
+    elemento.addEventListener('click', function () {
+      estado.figuraSeleccionada = figuras[i];
+      actualizarLista();
+      dibujar();
+    });
+
+    lista.appendChild(elemento);
   }
 }

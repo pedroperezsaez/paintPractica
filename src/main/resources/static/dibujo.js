@@ -1,18 +1,39 @@
 import { canvas, ctx, figuras, formulario, estado } from './variables.js';
-import { guardar } from "./local.js";
-import { registrarCambio } from "./historial.js";
+import { guardar } from './local.js';
+import { historialCrear, historialCambiar } from './historial.js';
 import {
   crearContorno,
   dibujar,
   actualizarLista,
   ponerNombre,
   cambiarTamano,
-  clickFigura
+  clickFigura,
 } from './figuras.js';
 
-function mostrarOpciones() {
- 
+function buscarFigura(posicion) {
+  ctx.lineWidth = 8;
+  let encontrado = null;
 
+  for (const figura of figuras) {
+    const contorno = crearContorno(figura);
+
+    let dentro;
+    if (figura.tieneRelleno) {
+      dentro = ctx.isPointInPath(contorno, posicion.x, posicion.y);
+    } else {
+      dentro = ctx.isPointInStroke(contorno, posicion.x, posicion.y);
+    }
+
+    if (dentro) {
+      encontrado = figura;
+    }
+  }
+
+  ctx.lineWidth = 1;
+  return encontrado;
+}
+
+function mostrarOpciones() {
   formulario.innerHTML = `
     <div>
       <input type="checkbox" id="relleno">
@@ -43,8 +64,9 @@ function mostrarOpciones() {
     guardar();
   });
 
-  document.getElementById('color').addEventListener('change', function () {
-    estado.color = document.getElementById('color').value;
+  const selectorColor = document.getElementById('color');
+  selectorColor.addEventListener('change', function () {
+    estado.color = selectorColor.value;
     guardar();
   });
 }
@@ -66,65 +88,121 @@ for (const boton of botones) {
 }
 
 canvas.addEventListener('mousedown', function (event) {
-  if (estado.creando == false) {
+  const posicionClick = clickFigura(event);
+
+  if (estado.creando == true) {
+    const x = posicionClick.x;
+    const y = posicionClick.y;
+    const tamano = 100;
+
+    const figura = {
+      tipo: estado.tipoFigura,
+      x: x,
+      y: y,
+      color: document.getElementById('color').value,
+      tieneRelleno: estado.relleno,
+    };
+
+    ponerNombre(figura);
+
+    if (estado.tipoFigura == 'Trazado') {
+      figura.posicionPuntos = [{ x: x, y: y }];
+      figura.tieneRelleno = false;
+      estado.figuraEnCreacion = figura;
+    } else {
+      cambiarTamano(figura, tamano);
+      estado.figuraSeleccionada = figura;
+      estado.creando = false;
+      formulario.innerHTML = '';
+    }
+
+    historialCrear(figuras.length, figura, 'Crear ' + figura.nombre);
+    figuras.push(figura);
+
+    actualizarLista();
+    dibujar();
+    guardar();
     return;
   }
 
-    const posicionClick = clickFigura(event);
-  const x = posicionClick.x;
-  const y = posicionClick.y;
-  const tamano = 100;
+  const figura = buscarFigura(posicionClick);
 
-  const figura = {
-    tipo: estado.tipoFigura,
-    x: x,
-    y: y,
-    color: document.getElementById('color').value,
-    tieneRelleno: estado.relleno,
-  };
-
-  ponerNombre(figura);
-
-  if (estado.tipoFigura == 'Trazado') {
-    figura.posicionPuntos = [{ x: x, y: y }];
-    figura.tieneRelleno = false;
-    estado.figuraEnCreacion = figura;
-  } else {
-    cambiarTamano(figura, tamano);
+  if (figura !== null) {
+    estado.figuraMoviendose = figura;
+    estado.ultimoPunto = posicionClick;
+    estado.yaRegistrado = false;
     estado.figuraSeleccionada = figura;
-    estado.creando = false;
-    formulario.innerHTML = '';
+    actualizarLista();
+    dibujar();
   }
-      registrarCambio("Crear " + figura.nombre);
-    figuras.push(figura);
-  actualizarLista();
-  dibujar();
-  guardar();
 });
 
 canvas.addEventListener('mousemove', function (event) {
-  if (estado.figuraEnCreacion == null) {
+  const posicionClick = clickFigura(event);
+
+  if (estado.figuraEnCreacion != null) {
+    estado.figuraEnCreacion.posicionPuntos.push({
+      x: posicionClick.x,
+      y: posicionClick.y,
+    });
+    dibujar();
     return;
   }
 
-   const posicionClick = clickFigura(event);
-  estado.figuraEnCreacion.posicionPuntos.push({
-    x: posicionClick.x,
-    y: posicionClick.y,
-  });
+  if (estado.figuraMoviendose == null) {
+    return;
+  }
+
+  const figura = estado.figuraMoviendose;
+  const movimientoX = posicionClick.x - estado.ultimoPunto.x;
+  const movimientoY = posicionClick.y - estado.ultimoPunto.y;
+
+  if (movimientoX === 0 && movimientoY === 0) {
+    return;
+  }
+
+  if (estado.yaRegistrado === false) {
+    historialCambiar(figuras.indexOf(figura), figura, 'Mover ' + figura.nombre);
+    estado.yaRegistrado = true;
+  }
+
+  figura.x = figura.x + movimientoX;
+  figura.y = figura.y + movimientoY;
+
+  if (figura.tipo == 'Triangulo') {
+    const tamano = figura.y2 - figura.y1;
+    cambiarTamano(figura, tamano);
+  }
+
+  if (figura.tipo == 'Trazado') {
+    for (const punto of figura.posicionPuntos) {
+      punto.x = punto.x + movimientoX;
+      punto.y = punto.y + movimientoY;
+    }
+  }
+
+  estado.ultimoPunto = posicionClick;
   dibujar();
 });
 
 window.addEventListener('mouseup', function () {
-  if (estado.figuraEnCreacion == null) {
+  if (estado.figuraEnCreacion != null) {
+    estado.figuraEnCreacion = null;
+    estado.creando = false;
+    formulario.innerHTML = '';
+    dibujar();
+    guardar();
     return;
   }
 
-   estado.figuraEnCreacion = null;
-  estado.creando = false;
-  formulario.innerHTML = "";
-  dibujar();
-  guardar();
+  if (estado.figuraMoviendose != null) {
+    if (estado.yaRegistrado === true) {
+      guardar();
+    }
+    estado.figuraMoviendose = null;
+    estado.ultimoPunto = null;
+    estado.yaRegistrado = false;
+  }
 });
 
 canvas.addEventListener('wheel', function (event) {
@@ -153,8 +231,12 @@ canvas.addEventListener('wheel', function (event) {
   if (tamano < 10) {
     tamano = 10;
   }
-    registrarCambio("Redimensionar " + estado.figuraSeleccionada.nombre);
-    cambiarTamano(estado.figuraSeleccionada, tamano);
+  historialCambiar(
+    figuras.indexOf(estado.figuraSeleccionada),
+    estado.figuraSeleccionada,
+    'Redimensionar ' + estado.figuraSeleccionada.nombre,
+  );
+  cambiarTamano(estado.figuraSeleccionada, tamano);
   dibujar();
   guardar();
 });
@@ -165,28 +247,7 @@ canvas.addEventListener('click', function (event) {
   }
 
   const posicionClick = clickFigura(event);
-
-  ctx.lineWidth = 8;
-  let encontrado = null;
-
-  for (const figura of figuras) {
-    const contorno = crearContorno(figura);
-
-    let dentro;
-    if (figura.tieneRelleno) {
-      dentro = ctx.isPointInPath(contorno, posicionClick.x, posicionClick.y);
-    } else {
-      dentro = ctx.isPointInStroke(contorno, posicionClick.x, posicionClick.y);
-    }
-
-    if (dentro) {
-      encontrado = figura;
-    }
-  }
-
-  ctx.lineWidth = 1;
-
-  estado.figuraSeleccionada = encontrado;
+  estado.figuraSeleccionada = buscarFigura(posicionClick);
   actualizarLista();
   dibujar();
 });

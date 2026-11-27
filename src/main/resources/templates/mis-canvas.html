@@ -1,0 +1,91 @@
+<!doctype html>
+<html
+  lang="es"
+  xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0" />
+    <title>Mis canvas</title>
+
+    <link
+      rel="stylesheet"
+      th:href="@{/style.css}" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css"
+      rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+  </head>
+
+  <body class="pagina-listado">
+    <nav
+      class="d-flex justify-content-end align-items-center gap-2"
+      id="navegacion">
+      <a
+        class="boton-nav"
+        id="boton-canvas"
+        th:href="@{/paint}">
+        <i class="bi bi-palette-fill"></i> Canvas
+      </a>
+      <a
+        class="boton-nav activa"
+        th:href="@{/paint/mis-canvas}">
+        <i class="bi bi-collection"></i> Mis canvas
+      </a>
+
+      <a
+        class="boton-nav"
+        th:href="@{/paint/otros-canvas}">
+        <i class="bi bi-globe"></i> Otros canvas
+      </a>
+
+      <form
+        method="post"
+        th:action="@{/logout}">
+        <button
+          class="boton-nav activa"
+          type="submit">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </form>
+    </nav>
+
+    <div
+      class="panel"
+      id="lista-canvas">
+      <h4 class="titulo-lista">Mis canvas</h4>
+
+      <div class="contenedor-canvas">
+        <a
+          class="menu-item lista-canvas d-flex flex-column"
+          th:each="canva : ${todosLosCanvasUsuario}"
+          th:href="@{'/paint/' + ${canva.id}}">
+          <span
+            class="nombre-canvas"
+            th:text="${canva.nombre}"
+            >Nombre canvas</span
+          >
+          <span
+            class="fecha-canvas"
+            th:text="'Creado: ' + ${canva.fechaCreacion}"
+            >Creado</span
+          >
+          <span
+            class="fecha-canvas"
+            th:text="'Modificado: ' + ${canva.fechaModificacion}"
+            >Modificado</span
+          >
+        </a>
+      </div>
+
+      <a
+        class="boton-nav mt-3 d-inline-block"
+        th:href="@{/paint/nuevo}">
+        Nuevo canvas
+      </a>
+    </div>
+  </body>
+</html>

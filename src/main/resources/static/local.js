@@ -1,6 +1,6 @@
-import { canvas, figuras, idCanvas, estado, historial } from "./variables.js";
+import { canvas, figuras, idCanvas, estado, historial } from './variables.js';
 
-const clave = "paint-" + idCanvas;
+const clave = 'paint-' + idCanvas;
 
 export function guardar() {
   const datos = {
@@ -10,9 +10,9 @@ export function guardar() {
     color: estado.color,
     relleno: estado.relleno,
     tipoFigura: estado.tipoFigura,
-    deshechas: historial.deshechas,
-    rehechas: historial.rehechas,
-     entradas: historial.entradas
+    deshacer: historial.deshacer,
+    rehacer: historial.rehacer,
+    entradas: historial.entradas,
   };
 
   localStorage.setItem(clave, JSON.stringify(datos));
@@ -34,13 +34,13 @@ export function cargar() {
 
   canvas.width = datos.ancho || 800;
   canvas.height = datos.alto || 800;
-  estado.color = datos.color || "red";
+  estado.color = datos.color || 'red';
   estado.relleno = datos.relleno || false;
-  estado.tipoFigura = datos.tipoFigura || "";
+  estado.tipoFigura = datos.tipoFigura || '';
 
-  historial.deshechas = datos.deshechas || [];
-  historial.rehechas = datos.rehechas || [];
-    historial.entradas = datos.entradas || [];
+  historial.deshacer = datos.deshacer || [];
+  historial.rehacer = datos.rehacer || [];
+  historial.entradas = datos.entradas || [];
 
   return true;
 }
